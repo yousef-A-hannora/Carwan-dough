@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<!--=== Coding by CodingLab | www.codinglabweb.com === -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="/css/content.css">
+    <title>Admin Dashboard Panel</title> 
+</head>
+<body>
+<%- include("Bases/adminBase") %>
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-files-landscapes"></i>
+                    <span class="text">Content</span>
+                </div>
+
+            </div>
+            <main>
+
+                <div class="admin-dashboard">
+
+                    <!-- Action Buttons -->
+                    <div class="actions">
+                      <button class="button" id="openAddProductModal">Add Product</button>
+                      <button class="button" id="openEditPasswordModal">Add category</button>
+                      <button class="button" id="openEditDayesModal">Edit Work-Dayes</button>
+                      <button class="button" id="openAdminModal">Edit admin Password</button>
+                    </div>
+                    <hr>
+
+                    <% for(let categoryWithProducts of catsWithProds){%>
+                      <div class="category">
+                          <div class="category-info">
+                            <h1 class="category-name"><%= categoryWithProducts.name %></h1> 
+                            <div class="category-info" style="margin: 0; margin-left: 10px;">
+                              <label class="toggle-switch square" >
+                                <% if(categoryWithProducts.isActive){ %>
+                                  <input type="checkbox" catId="<%= categoryWithProducts.id %>" checked class="category-toggle">
+                                <% } else { %>
+                                  <input type="checkbox" catId="<%= categoryWithProducts.id %>" class="category-toggle">
+                                <% } %>
+                                <span class="slider"></span>
+                              </label>
+                            </div>
+                            <a href="/edit-category/<%= categoryWithProducts.id %>" style="margin-right: 10px;"><button class="button">Edit category</button></a>
+                          </div>
+
+                          <!-- Product Table -->
+                          <table class="product-table">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th>Product Video</th>
+                                <th>Product Image</th>
+                                <th>Product Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% for(let Products of categoryWithProducts.products){%>
+                                <% if(!Products.deleted) {%>
+                              <tr>
+                                    <td style="width: 0px;">
+                                      <label class="toggle-switch square">
+                                        <% if(Products.isActive){ %>
+                                          <input type="checkbox" prodId="<%= Products.id%>" checked class="product-toggle">
+                                        <% } else { %>
+                                          <input type="checkbox" prodId="<%= Products.id%>" class="product-toggle">
+                                        <% } %>
+                                        <span class="slider"></span>
+                                      </label>
+                                    </td>
+                                    <td class="video-td">
+                                      <video autoplay muted loop>
+                                        <source src="/products/videos/<%= Products.video %>" >
+                                      </video>
+                                    </td>
+                                    <td class="img-td"><img src="/products/images/<%= Products.photo %>" alt="Product 1" class="product-img"></td>
+                                    <td><%= Products.name %></td>
+                                    <td class="product-des"><%= Products.description %></td>
+                                    <td><%= Products.price %></td>
+                                    <td style="width: 5vh;">
+                                      <a href="/edit-product/<%= Products.id%>"><button class="edit-button" id="edit-product">Edit</button></a>
+                                      <a href="#"><button class="remove-button" prod-id="<%=Products.id%>" id="removeProd">Remove</button></a>
+                                    </td>
+                              </tr>
+                              <% } %>
+                            <% } %>
+                            </tbody>
+                          </table>
+                  </div>
+                <% } %>
+             
+            </div>
+                <!-- Add Product Modal -->
+                <div id="addProductModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close-button" id="closeAddProductModal">&times;</span>
+                    <h2>Add Product</h2>
+                    <form action="" method="post" enctype="multipart/form-data">
+                      <input type="hidden" name="form-type" value="product">
+                      <div id="productInputFields" style="padding: 10px; display: flex; justify-content: center; flex-direction: column;">
+                        <div class="input-group">
+                          <label for="Category">Category</label>
+                          <select name="Category" id="Category" onchange="toggleExtraFields()">
+                            <% for(let category of cats){ %>
+                              <option value="<%= category.id %>"><%= category.name %></option>
+                            <% } %>
+                          </select>
+                        </div>
+                        <div class="input-group">
+                          <label for="product_name">Product Name</label>
+                          <input type="text" id="product_name" name="product_name" required>
+                        </div>
+                        <div class="input-group">
+                          <label for="product_description">Product Description</label>
+                          <textarea id="product_description" name="product_description" required></textarea>
+                        </div>
+                        <div class="input-group">
+                          <label for="product_price">Product Price</label>
+                          <input type="number" id="product_price" name="product_price" required min="0">
+                        </div>
+                        <div class="input-group">
+                          <label for="product_image">Product Image</label>
+                          <input type="file" id="product_image" name="product_image" required>
+                        </div>
+                        <div class="input-group">
+                          <label for="product_video">Product Video</label>
+                          <input type="file" id="product_video" name="product_video">
+                        </div>
+                        <!-- Extra fields -->
+                        <div id="extraFields" style="display: none;">
+                          <div class="input-group">
+                            <label for="boxitems_number">Box Items Number</label>
+                            <input type="number" id="boxitems_number" name="boxitems_number" min="0">
+                          </div>
+                          <div class="input-group">
+                            <label for="box_type">Box Type</label>
+                            <select id="box_type" name="box_type">
+                              <% for(let category of cats){ %>
+                                <% if(category.name !== "share boxss" && category.name !== "custom orders"){ %>
+                                <option value="<%= category.id %>"><%= category.name %></option>
+                                <% } %>
+                              <% } %>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="submit" class="submit-button">Add Product</button>
+                    </form>
+                  </div>
+                </div>
+            
+                <!-- Add category Modal -->
+                <div id="editPasswordModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close-button" id="closeEditPasswordModal">&times;</span>
+                    <h2>Add Category</h2>
+                    <form action="/api/admin/content/add-category" method="post" enctype="multipart/form-data">
+                      <input type="hidden" name="form-type" value="category">
+                      <div class="input-group">
+                        <label for="category_name">Category Name</label>
+                        <input type="text" id="category_name" name="category_name" required>
+                      </div>
+
+                      <div class="input-group">
+                        <label for="category_image">Category Image</label>
+                        <input type="file" id="category_image" name="category_image" required>
+                      </div>
+                      <button type="submit" class="submit-button">Add Category</button>
+                    </form>
+                  </div>
+                </div>
+
+                
+                <!-- Edit WorkDayes Modal -->
+                <div id="EditWordDayesModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close-button" id="closeEditWordDayesModal">&times;</span>
+                    <h2>Edit Work Dayes</h2>
+                    <form action="/api/admin/content/edit-workdayes" method="post" enctype="multipart/form-data" class="formInputs">                      
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Edit Admin Modal -->
+                <div id="EditAdminModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close-button" id="closeAdminModal">&times;</span>
+                    <h2>Edit Admin password</h2>
+                    <form action="#" method="post">
+                      <div class="input-group">
+                        <label for="">Password</label>
+                        <div style="display: flex;gap: 5px;align-items: center;">
+                          <input type="password" name="password"  required>
+                          <i id="togglePasswordIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
+                        </div>
+                      </div>
+                      <div class="input-group">
+                        <label for="">Password again</label>
+                        <div style="display: flex;gap: 5px;align-items: center;">
+                          <input type="password" name="passwordAgian"  required>
+                          <i id="togglePasswordAgainIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
+                        </div>
+                      </div>
+                      <button type="submit" class="submit-button">Update password</button>
+                    </form>
+                  </div>
+                </div>
+            </main>
+
+<%- include("Bases/adminBaseCloser") %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+  //|-------------------------------------------------------------------|
+  //|__________________________ Select forms ___________________________|
+  //|-------------------------------------------------------------------|
+
+  const allForm = document.querySelectorAll('form')
+  const productForm = allForm[0]
+  const categoryForm = allForm[1]
+  const workDayesForm = allForm[2]
+
+  //|-------------------------------------------------------------------|
+  //|______________________Create workDays form_________________________|
+  //|-------------------------------------------------------------------|
+
+  const workDays = "<%= workdays %>"
+  const days=['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+  function createWordDaysElements(day){
+
+    const container = document.createElement('div');
+    container.className = 'input-work-dayes';
+
+    // Create the label element
+    const label = document.createElement('label');
+    label.setAttribute('for', day);
+    label.textContent = day;
+
+    // Create the input element
+    const input = document.createElement('input');
+    input.id = day;
+    input.type = 'checkbox';
+    input.name = 'day';
+    input.value = day;
+    if(workDays.includes(day)) input.checked=true
+    // Append the label and input to the container
+    container.appendChild(label);
+    container.appendChild(input);
+    workDayesForm.append(container)
+  }
+
+  days.forEach((day)=>{
+    createWordDaysElements(day)
+  })
+
+  //|-------------------------------------------------------------------|
+  //|________________Create Button for workDays form____________________|
+  //|-------------------------------------------------------------------|
+
+  const workDaysBtn = document.createElement('button')
+  workDaysBtn.className = "submit-button"
+  workDaysBtn.type = "submit"
+  workDaysBtn.textContent = "Update Work Dayes"
+
+  workDayesForm.append(workDaysBtn)
+
+  //|-------------------------------------------------------------------|
+  //|__________________________Add product form_________________________|
+  //|-------------------------------------------------------------------|
+
+  function toggleExtraFields() {
+    const categorySelect = document.getElementById("Category");
+    const extraFields = document.getElementById("extraFields");
+    // Replace "ShareBox" with the actual value for the ShareBox category
+    if (categorySelect.options[categorySelect.selectedIndex].text === "share boxs") {
+      extraFields.style.display = "block";
+    } else {
+      extraFields.style.display = "none";
+      
+    }
+  }
+
+
+  productForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const fd = new FormData(productForm);
+
+    const urlEncodedData = new URLSearchParams(fd).toString();
+    fetch("/api/admin/content/add-product",{
+      body:fd,
+      method:"POST"
+    }).then(response => {
+        if (response.ok) {
+          Swal.fire({
+              icon: "success",
+              title: "Product Added successfully",
+              "confirmButtonColor": "#c01836",
+          });
+          productForm.reset()
+          setTimeout(()=>{
+                    window.location.href = "/content";                   
+          },1000)
+        } else {
+          return response.text().then(errMsg => {
+            Swal.fire({
+              icon: "error",
+              title: "Error happened: " + errMsg,
+              "confirmButtonColor": "#c01836",
+            });
+          });
+        }
+  })
+  })
+
+  //|-------------------------------------------------------------------|
+  //|__________________________Add category form________________________|
+  //|-------------------------------------------------------------------|
+
+  categoryForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const fd = new FormData(categoryForm);
+
+    const urlEncodedData = new URLSearchParams(fd).toString();
+    fetch("/api/admin/content/add-category",{
+      body:fd,
+      method:"POST",
+    }).then(response => {
+        if (response.ok) {
+          Swal.fire({
+              icon: "success",
+              title: "Category Added successfully",
+              "confirmButtonColor": "#c01836",
+          });
+          categoryForm.reset()
+          setTimeout(()=>{
+                    window.location.href = "/content";                   
+          },1000)
+        } else {
+          return response.text().then(errMsg => {
+            Swal.fire({
+              icon: "error",
+              title: "Error happened: " + errMsg,
+              "confirmButtonColor": "#c01836",
+            });
+          });
+        }
+    })
+    .catch(() => {
+        console.log("Network or server error happened");
+    });
+  })
+
+  //|-------------------------------------------------------------------|
+  //|__________________________Update work days form____________________|
+  //|-------------------------------------------------------------------|
+
+  workDayesForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const fd = new FormData(workDayesForm);
+
+    const urlEncodedData = new URLSearchParams(fd).toString();
+    fetch("/api/admin/content/edit-workdays",{
+      body:urlEncodedData,
+      method:"PUT",
+      headers:{
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    }).then(response=>{
+      if(response.ok){
+        Swal.fire({
+          "icon":"success",
+          "message":"days edited successfully",
+          "confirmButtonColor": "#c01836",
+        });
+      }else{
+        return response.text().then(errMsg => {
+            Swal.fire({
+              icon: "error",
+              title: "Error happened: " + errMsg,
+              "confirmButtonColor": "#c01836",
+            });
+          });
+        }
+    })
+    // console.log(fd);
+  })
+  //|-------------------------------------------------------------------|
+  //|__________________________Update Admin account form____________________|
+  //|-------------------------------------------------------------------|
+
+  workDayesForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const fd = new FormData(workDayesForm);
+
+    const urlEncodedData = new URLSearchParams(fd).toString();
+    fetch("/api/admin/content/edit-workdays",{
+      body:urlEncodedData,
+      method:"PUT",
+      headers:{
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    }).then(response=>{
+      if(response.ok){
+        Swal.fire({
+          "icon":"success",
+          "message":"days edited successfully",
+          "confirmButtonColor": "#c01836",
+        });
+      }else{
+        return response.text().then(errMsg => {
+            Swal.fire({
+              icon: "error",
+              title: "Error happened: " + errMsg,
+              "confirmButtonColor": "#c01836",
+            });
+          });
+        }
+    })
+    // console.log(fd);
+  })
+  //|-------------------------------------------------------------------|
+  //|__________________________Remove product___________________________|
+  //|-------------------------------------------------------------------|
+
+  document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("remove-button")) {
+    // Retrieve the productId from the button's data-id attribute
+    const productId = e.target.getAttribute("prod-id");
+
+    fetch(`/api/admin/content/deleteProduct/${productId}`,{method:"DELETE"}).then(responce=>{
+      if(responce.ok){
+        Swal.fire({
+          "message":"product deleted",
+          "icon":"success",
+          "confirmButtonColor": "#c01836",
+        });
+        setTimeout(()=>{
+          window.location.href="/content"
+        },1000);
+        // console.log("Deleted")
+      }else{
+        return responce.text().then(err =>{
+          Swal.fire({
+            "message":"Error happened Try again",
+            "icon":"error",
+            "confirmButtonColor": "#c01836",
+          });
+          console.log("Error, couldn't delete the product")
+        })
+      }
+    })
+  }
+})
+
+  //|-------------------------------------------------------------------|
+  //|__________________________Activate product_________________________|
+  //|-------------------------------------------------------------------|
+
+document.addEventListener("change",(e)=>{
+  if(e.target.classList.contains("product-toggle")){
+    const prodId = e.target.getAttribute("prodId");
+    let isActive = e.target.checked;
+    if(isActive) isActive=1
+    else isActive=0
+
+    const fd = new FormData
+    fd.append("active",isActive)
+    const urlEncodedData = new URLSearchParams(fd).toString(); 
+    // Send the request to the endpoint
+    fetch(`/api/admin/content/changeProductState/${prodId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: urlEncodedData,
+    });
+  }
+
+  if(e.target.classList.contains("category-toggle")){
+    const catId = e.target.getAttribute("catId");
+    let isActive = e.target.checked;
+    if(isActive) isActive=1
+    else isActive=0
+
+    const fd = new FormData
+    fd.append("active",isActive)
+    const urlEncodedData = new URLSearchParams(fd).toString(); 
+        // Send the request to the endpoint
+    fetch(`/api/admin/content/changeCategoryState/${catId}`, {
+      body: urlEncodedData,
+      method: "PATCH",
+      headers:{
+        "Content-Type": "application/x-www-form-urlencoded",
+      }
+    });
+  }
+})
+</script>
+    <script>
+        // Ensure the modals are hidden initially
+  document.getElementById("addProductModal").style.display = "none";
+  document.getElementById("editPasswordModal").style.display = "none";
+  document.getElementById("EditWordDayesModal").style.display = "none";
+  document.getElementById("EditAdminModal").style.display = "none";
+
+  // Open Add Product Modal when button is clicked
+  document.getElementById("openAddProductModal").onclick = function() {
+    document.getElementById("addProductModal").style.display = "block";
+  };
+  // Close Add Product Modal
+  document.getElementById("closeAddProductModal").onclick = function() {
+    document.getElementById("addProductModal").style.display = "none";
+  };
+  
+
+  // Open Edit Password Modal when button is clicked
+  document.getElementById("openEditPasswordModal").onclick = function() {
+    document.getElementById("editPasswordModal").style.display = "block";
+  };
+  // Close Edit Password Modal
+  document.getElementById("closeEditPasswordModal").onclick = function() {
+    document.getElementById("editPasswordModal").style.display = "none";
+  };
+  
+
+  // Open Edit Word Dayes Modal when button is clicked
+    document.getElementById("openEditDayesModal").onclick = function() {
+    document.getElementById("EditWordDayesModal").style.display = "block";
+  };
+  // Close Edit Word Dayes Modal
+  document.getElementById("closeEditWordDayesModal").onclick = function() {
+    document.getElementById("EditWordDayesModal").style.display = "none";
+  };
+
+  // Open Edit Admin Modal when button is clicked
+  document.getElementById("openAdminModal").onclick = function() {
+    document.getElementById("EditAdminModal").style.display = "block";
+  };
+  // Close Edit Admin Modal
+  document.getElementById("closeAdminModal").onclick = function() {
+    document.getElementById("EditAdminModal").style.display = "none";
+  };
+
+  // Close modals if clicked outside the modal
+  window.onclick = function(event) {
+    if (event.target == document.getElementById("addProductModal")) {
+      document.getElementById("addProductModal").style.display = "none";
+    }
+    if (event.target == document.getElementById("editPasswordModal")) {
+      document.getElementById("editPasswordModal").style.display = "none";
+    }
+    if (event.target == document.getElementById("EditWordDayesModal")) {
+      document.getElementById("EditWordDayesModal").style.display = "none";
+    }
+    if (event.target == document.getElementById("EditAdminModal")) {
+      document.getElementById("EditAdminModal").style.display = "none";
+    }
+  };
+  
+  </script>
+
+  <!-- for updating password -->
+  <script>
+        const togglePasswordIcon = document.querySelector("#togglePasswordIcon");
+        const togglePasswordAgainIcon = document.querySelector("#togglePasswordAgainIcon");
+        const password = document.querySelector("[name='password']")
+        const passwordAgain = document.querySelector("[name='passwordAgian']")
+
+        // Toggle password visibility
+        togglePasswordIcon.addEventListener("click", function () {
+            const type = password.type === "password" ? "text" : "password";
+            password.type = type;
+            this.classList.toggle("fa-eye"); // Assuming you are using FontAwesome for the icon
+            this.classList.toggle("fa-eye-slash");
+        });
+
+        togglePasswordAgainIcon.addEventListener("click", function () {
+            const type = passwordAgain.type === "password" ? "text" : "password";
+            passwordAgain.type = type;
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+        });
+
+
+        document.forms[3].onsubmit = function(event){
+          event.preventDefault()
+          // console.log("update password clicked")
+            samepass=false
+            if (password.value.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)) {
+              if(password.value === passwordAgain.value){
+                samepass=true
+            }
+            if(samepass === false){
+                Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "password not similar",
+                "confirmButtonColor": "#c01836",
+                });
+            }else{
+              const password = document.querySelector("[name='password']").value
+              fetch("/api/auth/adminUpdate",{
+                body:JSON.stringify({"password":password}),
+                method:"PATCH",
+                headers:{
+                  "Content-Type": "application/json",
+                }
+              }).then(responce=>{
+                if(responce.ok){
+                  Swal.fire({
+                  icon: "success",
+                  title: "Password updated",
+                  "confirmButtonColor": "#c01836",
+                  });
+                  setTimeout(()=>{
+                    window.location.href = "/api/auth/logout"
+                  },1500)
+                }
+              })
+            }
+        }else{
+          Swal.fire({
+                icon: "error",
+                title: "Weak password",
+                text: "password must be at least 8 letters,one Uppercase,one special character,one number",
+                "confirmButtonColor": "#c01836",
+              });
+        }
+      }
+  </script>
+</body>
+</html>

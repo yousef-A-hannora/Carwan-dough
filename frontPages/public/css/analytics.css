@@ -1,0 +1,173 @@
+:root{
+    /* ===== Colors ===== */
+    --red: #d81b32;
+    --dark-red: #c01836;
+    --white: #F1ECE7;
+
+    --primary-color: #c01836;
+    --panel-color: #F1ECE7;
+    --text-color: rgb(0, 0, 0);
+    --black-light-color: #414040;
+    --border-color: #e6e5e5;
+    --toggle-color: #DDD;
+    --box1-color: #ea596a;
+    --box2-color: #ea596a;
+    --box3-color: #ea596a;
+    --title-icon-color: #fff;
+
+}
+
+.date-range-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 10px;
+    padding: 10px;
+    background-color: #F1ECE7;
+    border-radius: 8px;
+    width: 50%;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.date-range-form label {
+    font-size: 16px;
+    color: #414040;
+    margin-right: 5px;
+}
+
+.date-range-form input[type="date"] {
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #414040;
+    border: 1px solid #e6e5e5;
+    border-radius: 5px;
+    background-color: #fff;
+    flex-grow: 1;
+    min-width: 120px;
+}
+
+.date-range-form input[type="date"]:focus {
+    border-color: #c01836;
+    outline: none;
+    box-shadow: 0 0 5px rgba(208, 24, 54, 0.3);
+}
+
+@media (max-width: 600px) {
+    .date-range-form {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .date-range-form label {
+        margin-right: 0;
+    }
+
+    .date-range-form input[type="date"] {
+        width: 100%;
+    }
+}
+
+.statistisc-boxes{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    grid-template-rows: repeat(5,200px);
+    gap: 10px;
+
+}
+.total-boxes{
+    display: flex;
+    justify-content: space-around;
+    grid-column: 1/4;
+    grid-row: 1/2;
+}
+.total{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 1.5vw;
+    margin: 0 0 10px 0;
+    grid-row: 1/2;
+}
+.customers{
+    background-color: var(--box1-color);
+}
+.customers i{
+    margin: 9px 0px;
+}
+.address{
+    width: 35%;
+}
+.earnings{
+    background-color: var(--box2-color);
+}
+.orders{
+    background-color: var(--box3-color);
+}
+
+.users-statistics{
+    padding: 0px 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: auto;
+    grid-column: 1/4;
+    grid-row: 2/4;
+}
+
+h1{
+    color: #414040;
+    font-size: 30px;
+    position: sticky;
+    top: 0px;
+    z-index: 3; 
+    background-color: #F1ECE7; 
+    margin-bottom: -19px;
+}
+.order-table thead{
+    position: sticky;
+    top: 45px;
+    z-index: 1; /* Ensure h1 stays on top */
+    background-color: #F1ECE7;
+}
+
+.products-statistics{
+    margin:30px 0 60px;
+    padding: 0px 20px;
+    grid-column: 1/4;
+    grid-row: 4/6;
+}
+.products-statistics h1{
+    margin-top: 50px;
+}
+.chart-container {
+    width: 100%;
+    max-height: 500px;
+    margin: auto;
+  }
+
+
+  @media(max-width:800px){
+    .total{
+        font-size: 3vw;
+        text-align: center;
+    }
+    .address{
+        max-width: 25vw;
+    }
+    .chart-container {
+        width: 100%;
+        max-height: 300px;
+        margin: auto;
+      }
+
+      .products-statistics h1{
+        margin-top: 20px;
+    }
+
+  }

@@ -1,0 +1,162 @@
+        /* Dashboard Colors */
+        :root {
+            --primary-color: #c01836;
+            --panel-color: #F1ECE7;
+            --text-color: rgb(0, 0, 0);
+            --black-light-color: #414040;
+        }
+
+        /* Basic Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--panel-color);
+            color: var(--text-color);
+        }
+        .actions{
+            display: flex;
+            gap: 10px;
+        }
+        /* Button Styling */
+        .open-modal-btn {
+            background-color: transparent;
+            color: #c01836;
+            border: #c01836 2px solid;
+            font-weight: 900;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            background-color: #fff;
+            padding: 3%;
+            border: #c01836 5px solid;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 2vw;
+        }
+        .modal li{
+            font-size: 1.5vw;
+        }
+        .modal .close {
+            cursor: pointer;
+            color: var(--black-light-color);
+            float: right;
+            font-size: 3vw;
+        }
+
+        /* Order Table Styling */
+        .order-table {
+            table-layout: fixed; 
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        td {
+            word-wrap: break-word; /* Break long words */
+            /* overflow: hidden;  */
+            /* text-overflow: ellipsis;  */
+        }
+        .order-table th, .order-table td {
+            padding: 10px;
+            border: 1px solid #c01836;
+            /* border: none;
+            border-bottom: #414040 2px solid; */
+            /* border-left: none; */
+            border-top: none;
+        }
+
+        .order-table th{
+            table-layout: fixed; /* Ensures cells respect max-width */
+            background-color:#c01836;
+            color: #F1ECE7;
+            border: none;
+            border-bottom: #c01836 2px solid;
+        }
+        .dateField{
+            width: 0px;
+        }
+        .addressField{
+            width: 30%;
+            overflow-x: auto;
+        }
+        .itemsField{
+            width: 20%;
+        }
+        .action-td{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        .done-btn {
+            background-color:#cf2115c0; ;
+            color: var(--black-light-color);
+            border: #41404074 2px solid;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-weight: 900;
+        }
+        .done{
+            background-color: #52efb5;
+        }
+
+        .payed{
+            background-color: #9cabe9;
+        }
+
+        .red-flag td{
+            background-color: #e09eab;
+        }
+        @media (max-width:800px){
+            .modal{
+                width: 40%;
+                padding: 10px;
+                padding-left: 30px;
+                overflow: auto;
+                max-height:220px ;
+                margin-top: 20px;
+            }
+            .modal h3 {
+                font-size: 3vw;
+            }
+            .modal li{
+                font-size: 3vw;
+            }
+            .modal .close {
+                font-size: 4.5vw;
+            }
+        }
+
+        @media (max-width:400px){
+            .modal{
+                width: 65%;
+                padding: 30px;
+                overflow: auto;
+                max-height:500px ;
+            }
+            .modal h3 {
+                font-size: 8vw;
+            }
+            .modal li{
+                font-size: 7vw;
+            }
+            .modal .close {
+                font-size: 12vw;
+            }
+        }

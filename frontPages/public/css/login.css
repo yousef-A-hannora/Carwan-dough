@@ -1,0 +1,128 @@
+:root{
+    --red:rgb(216, 27, 50);
+    --dark-red:#c01836;
+    --white:#F1ECE7;
+}
+body{
+    background: linear-gradient(20deg,rgb(226, 119, 119),rgb(219, 37, 37),var(--dark-red),rgb(213, 35, 35),rgb(226, 119, 119));
+    background-repeat:no-repeat ;
+    background-size: contain;
+    min-height: 98.3vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container{
+    position: absolute;
+    top: 1%;
+    left: 0;
+    margin: 1%;
+    width: 20%;
+}
+.logo{
+    width:100%;
+}
+
+.login-container {
+    background-color: var(--white);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 70%;
+    text-align: center;
+    /* border: 2px var(--white) solid; */
+    box-shadow: rgba(50, 50, 93, 0.55) 0px 13px 27px -5px, rgba(0, 0, 0, 0.4) 0px 8px 16px -8px;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+h2 {
+    color: var(--red);
+    margin-bottom: 20px;
+    font-size: 2.7vw;
+}
+
+input[type="text"],input[type="number"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid var(--dark-red);
+    border-radius: 5px;
+    background-color: var(--white);
+    /* color: var(--dark-red); */
+    font-size: 1.3vw;
+}
+
+/* input[type="text"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: var(--red);
+} */
+
+button {
+    background-color: var(--dark-red);
+    color: var(--white);
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 1.5vw;
+    margin-top: 5%;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--red);
+}
+
+.forgot-password {
+    margin-top: 15px;
+    font-size: 1.5vw;
+}
+
+.forgot-password a {
+    color: var(--red);
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    body{
+        background: linear-gradient(75deg,rgb(226, 119, 119),rgb(235, 34, 34),var(--red),rgb(240, 78, 78),rgb(226, 119, 119));
+        height: 99vh;
+    }
+    .logo-container{
+
+        position: absolute;
+        top: 2%;
+        left: 3%;
+        margin: 1%;
+        width: 35%;
+        /* padding-top: 0; */
+    }
+   
+    h2 {
+        font-size: 8vw;
+    }
+
+    input[type="text"],input[type="number"], input[type="password"] {
+        font-size: 3.5vw;
+    }
+
+    button {
+        border-radius: 5px;
+        font-size: 4vw;
+    }
+    .forgot-password {
+        margin-top: 15px;
+        font-size: 4vw;
+    }
+    
+}

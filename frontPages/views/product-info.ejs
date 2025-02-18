@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/product-info.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- <link rel="stylesheet" href="/css/products.css"> -->
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <title>Product Info</title>
+<style>
+    .backArrow{
+        padding-bottom: 5%;
+        position: sticky;
+        right: 83%;
+        z-index: 999;
+        top: 11px;
+        align-self: center;
+        background-color: var(--white);
+        color: var(--dark-red);
+        border: 2px var(--dark-red) solid;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 7vw;
+        height: 4vw;
+        font-size: 3vw;
+        font-weight: 900;
+    }
+    @media (max-width: 768px) {
+    .backArrow{
+        padding-bottom: 13%;
+        top: 11px;
+        width: 15vw;
+        height: 0vw;
+        font-size: 8vw;
+        }
+    }
+</style>
+</head>
+<body>
+<%- include("Bases/CustomerHeader") %>
+    <button class="backArrow" onclick='window.location.href = "/CategoryProducts/<%= product.categoryId %>"'>←</button>
+    <h1 style="text-align: center;"><%= product.name %> </h1>
+    <hr>
+    <div class="container">
+        <div class="media-container">
+        <% if(product.video){ %>
+                <video autoplay muted loop controls>
+                    <source src="/products/videos/<%= product.video %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            <% }else{ %>
+                    <img src="/products/images/<%= product.photo %>" alt="Product Image">
+            <% } %>
+        </div>
+        <% if(product.category.name==="share boxs"){ %>
+            <%- include("OddComponents/ShareBoxForm") %>
+        <% }else if(product.category.name==="custom orders"){ %>
+            <%- include("OddComponents/customProductForm") %>
+        <% }else{ %>
+
+            <div class="info-container">
+                <p class="description"><%= product.description %></p>
+                <% if(product.current_price !== product.price){ %>
+                    <div class="price">Price:<span id="product-price"> <s><%= product.price %> egp</s></span></div>
+                    <div class="price"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="product-price"><%= product.current_price %> egp</span></div>
+                <% }else{ %>
+                    <div class="price">Price: <span id="product-price"><%= product.price %> egp</span></div>
+                <% } %>
+
+                <div class="cart-controls">
+                    <div class="cart-controls">
+                        <p class="cart-quantity">You have </p>
+                        <span class="cart-quantity" id="quantity">1</span>
+                        <p class="cart-quantity">in Cart </p>
+                    </div>
+                </div>
+
+                <form action="" class="styled-form" style="margin-top: 20px;">
+                    <input type="number" name="quantity" placeholder="0" id="add-quantity" min="0">
+                    <button>Add to cart</button>
+                </form>
+            </div>
+        <% } %>
+</div>
+
+<%- include("Bases/CustomerFooter") %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    
+    let quantity = document.getElementById("quantity");
+
+    if(!localStorage[`product<%= product.id %>`]){localStorage[`product<%= product.id %>`] = 0}
+
+    quantity.innerText = localStorage[`product<%= product.id %>`]
+
+
+    const addQuantityForm = document.querySelector("form");
+    addQuantityForm.addEventListener("submit", (e) => {
+        let addQuantity = document.getElementById("add-quantity");
+
+        e.preventDefault();
+        const fd = new FormData(addQuantityForm);
+        const UrlEncodedData = new URLSearchParams(fd).toString();
+
+        fetch("/api/user/order/addToCart/<%= product.id %>",{
+            body:UrlEncodedData,
+            method:"PATCH",
+            headers:{
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        }).then(responce=>{
+            if(responce.ok){
+                // console.log("request looks good")
+                let currentElementCount = parseInt(localStorage[`product<%= product.id %>`]);
+                // console.log(`currentElementCount = ${currentElementCount}`)
+                localStorage[`product<%= product.id %>`] = currentElementCount + parseInt(addQuantity.value);
+                // console.log(`currentElementCount + parseInt(addQuantity) : ${currentElementCount} + ${parseInt(addQuantity.value)} = ${currentElementCount + parseInt(addQuantity.value)}`)
+                // console.log(`localStorage[product] = ${localStorage[`product<%= product.id %>`]} `)
+                quantity.innerText = localStorage[`product<%= product.id %>`];
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Added to cart successfully",
+                    "confirmButtonColor": "#c01836",
+                });
+                addQuantityForm.reset()
+
+                setTimeout(()=>{
+                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";                   
+                },1000)
+            }
+        })
+    })
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const logoutLink = document.getElementById("logout-link");
+
+        if (logoutLink) {
+            logoutLink.addEventListener("click", (event) => {
+                event.preventDefault(); // Prevent the default navigation
+
+                Swal.fire({
+                    title: 'really want to logout',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'green',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, logout!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = logoutLink.href; // Redirect if confirmed
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+
+</body>
+</html>

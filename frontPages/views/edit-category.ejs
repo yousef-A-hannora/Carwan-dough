@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--=== Coding by CodingLab | www.codinglabweb.com === -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="/css/style.css">
+     
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="/css/content.css">
+    <title>Admin Dashboard Panel</title> 
+</head>
+<body>
+<%- include("Bases/adminBase") %>
+
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-files-landscapes"></i>
+                    <span class="text">Content</span>
+                </div>
+
+            </div>
+            <main class="edit" style="width: 50%;">
+                <h2 style="align-self: flex-start;">Edit Category</h2>
+                <a href="/content" style="align-self: flex-end;"><span class="close-button" id="closeEditPasswordModal" style="font-size: 3em;">&times;</span></a>
+                  <form action="/api/admin/content/edit-cetegory" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="category_id" value="<%= cat.id %>">
+                    <div class="input-group">
+                      <label for="product-name">Category name</label>
+                      <input type="text" id="product-name" name="category_name" required value="<%= cat.name %>">
+                    </div>
+                  <div class="input-group">
+                      <label v>Current Image</label>
+                      <img src="/products/images/<%= cat.image %>" alt="Product Image">
+                  </div>
+                    <div class="input-group">
+                      <label for="category-image">New Image</label>
+                      <input type="file" id="category-image" name="category_image" value="">
+                    </div>
+                    <input type="submit" class="submit-button" value="Edit Product">
+                  </form>
+            </main>
+<%- include("Bases/adminBaseCloser") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        //|-----------------------------------------------------------------|
+        //|_________________________ send new data _________________________|
+        //|-----------------------------------------------------------------|
+        const catUpdateForm = document.querySelector("form")
+        catUpdateForm.addEventListener("submit",(e)=>{
+            e.preventDefault()
+            const fd = new FormData(catUpdateForm)
+
+            fetch("/api/admin/content/edit-category",{
+                body:fd,
+                method:"PUT"
+            }).then(response => {
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "category edited successfully",
+                    "confirmButtonColor": "#c01836",
+                });
+                setTimeout(()=>{
+                    window.location.href = "/content";                   
+                },1000)
+            } else {
+                return response.text().then(errMsg => {
+                    Swal.fire({
+                    icon: "error",
+                    title: "Error happened: " + errMsg,
+                    "confirmButtonColor": "#c01836",
+                    });
+                });
+            }
+        })
+        })
+
+    </script>
+</body>
+</html>

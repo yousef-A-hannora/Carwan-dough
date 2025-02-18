@@ -1,0 +1,266 @@
+<style>
+        .product-title{
+            text-align: left;
+            font-size: 3vw;
+        }
+
+        .sharebox-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70%;
+            margin: auto;
+        }
+        .donut-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+        input {
+            width: 60px;
+            text-align: center;
+            font-size: 2em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            color: white;
+            background-color: var(--red);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #counterWithBtns {
+            width: 20%;
+            display: flex;
+            align-items: center;
+            gap: 10%;
+            justify-content: center;
+        }
+        .quantity-buttons {
+            color: var(--dark-red);
+            background-color: var(--white);
+            border: 2px var(--dark-red) solid;
+            width: 30px;
+            height: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: scale(1.6);
+        }
+
+        .disabled-quantity-buttons {
+            color:#ccc;
+        }
+        #note{
+        font-size: 1.5vw;
+        margin: 10px;
+        }
+    @media(max-width:700px){
+        .product-title{
+            text-align: left;
+            font-size: 7vw;
+        }
+        .sharebox-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: auto;
+        }
+        .donut-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input {
+            width: 30%;
+            font-size: 7vw;
+            border-radius: 15px;
+        }
+
+        #counterWithBtns {
+            width: 40%;
+        }
+        .quantity-buttons {
+            color: var(--dark-red);
+            background-color: var(--white);
+            border: 2px var(--dark-red) solid;
+            width: 30px;
+            height: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: scale(1.4);
+        }
+        #note{
+        font-size: 3.5vw;
+        }
+    }
+
+</style>
+
+<div class="info-container">
+    <p class="description"><%= product.description %></p>
+    <div class="price">Price: <span id="product-price"><%= product.price %> egp</span></div>
+    <p id="note" ></p>
+
+    <form action="" method="post" class="sharebox-form">
+        <% for(let product of CWP.products){ %>
+
+        <!-- Example Donut 1 -->
+        <div class="donut-item">
+            <span class="product-title" style="color: var(--red);"><%= product.name %></span>
+            <div id="counterWithBtns">
+                <button type="button" class="quantity-buttons" id="minusBtn" productId="<%= product.id %>">-</button>
+                <input type="number" name="<%= product.name %>" id="quantity-<%= product.id %>" value="0" min="0">
+                <button type="button" class="quantity-buttons" id="plusBtn" productId="<%= product.id %>">+</button>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-button">Order Now</button>
+    </form>
+</div>
+
+<script>
+const productCustomInfo = JSON.parse('<%- JSON.stringify(product.customeInfo) %>');
+const { items } = productCustomInfo;
+const maxCountOfItem = parseInt(items)/4;
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("note").innerText = `Choose ${maxCountOfItem} types of <%= CWP.name %> (اللي هتختاره هيبقي منه 4 في العلبه)`
+    // Set max attribute for all input fields
+    const inputFields = document.querySelectorAll("input[type='number']");
+    inputFields.forEach(input => {
+        input.setAttribute("max", maxCountOfItem);
+    });
+
+    const updateButtonsState = () => {
+        const totalValue = Array.from(inputFields).reduce((sum, input) => {
+            return sum + parseInt(input.value || 0);
+        }, 0);
+
+        const plusButtons = document.querySelectorAll("button#plusBtn");
+        plusButtons.forEach(button => {
+            if (totalValue >= maxCountOfItem) {
+                button.disabled = true;
+                button.style.color = "#ccc";
+            } else {
+                button.disabled = false;
+                button.style.color = "";
+            }
+        });
+    };
+
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("quantity-buttons")) {
+            const id = e.target.getAttribute("productId");
+            const targetInput = document.getElementById(`quantity-${id}`);
+            let currentValue = parseInt(targetInput.value || 0);
+
+            if (e.target.id === "plusBtn" && currentValue < maxCountOfItem) {
+                targetInput.value = currentValue + 1;
+            } else if (e.target.id === "minusBtn" && currentValue > 0) {
+                targetInput.value = currentValue - 1;
+            }
+
+            // Update the state of the buttons
+            updateButtonsState();
+        }
+    });
+
+    // Initial check for button states
+    updateButtonsState();
+});
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector(".sharebox-form");
+    const note = document.getElementById("note");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Collect all input fields into an object
+        const inputFields = form.querySelectorAll("input[type='number']");
+        const formData = {};
+        inputFields.forEach(input => {
+            const name = input.getAttribute("name");
+            const value = parseInt(input.value) || 0; // Ensure value is a number
+            if(value >0) formData[name] = value;
+        });
+
+        // Show a message if no donuts are selected
+        const totalQuantity = Object.values(formData).reduce((sum, qty) => sum + qty, 0);
+        if (totalQuantity != maxCountOfItem) {
+            Swal.fire({
+                    icon: "error",
+                    title: `You have to choose ${maxCountOfItem}`,
+                    "confirmButtonColor": "#c01836",
+            });
+            return;
+        }
+
+        // Send the data to the "shareboxes" endpoint
+        try {
+            const response = await fetch("/api/user/order/customOrder", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({"prodId":'<%= product.id %>',"details":formData}),
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Added to cart successfully",
+                    "confirmButtonColor": "#c01836",
+                });
+                setTimeout(()=>{
+                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";                   
+                },1000)
+            } else {
+                note.textContent = "Failed to submit your order. Please try again.";
+                note.style.color = "red";
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            note.textContent = "An error occurred while submitting your order.";
+            note.style.color = "red";
+        }
+    });
+});
+
+</script>
