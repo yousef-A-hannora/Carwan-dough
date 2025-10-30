@@ -1,0 +1,64 @@
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Hide the non-order sections when printing */
+    nav,.deails, .top, .overview, .date-range-form, .actions,.done-btn, th,.uil.uil-bars.sidebar-toggle{
+        display: none;
+    }
+
+    .order-table {
+        /* margin-right: 50%; */
+        width: 100%; /* Ensure table spans the full page width */
+        border-collapse: collapse;
+    }
+
+    .tableContent {
+        page-break-before: always; /* Start each order on a new page */
+        display: block; /* Make rows block-level for better isolation */
+        /* margin-right: 200px;  */
+    }
+    .idField::before{
+        font-weight: 900;
+        content: "Order id: ";
+    }
+    .dateField::before{
+        font-weight: 900;
+        content: "Date: ";
+    }
+    .nameField::before{
+        font-weight: 900;
+        content: "Name: ";
+    }
+    .phoneField::before{
+        font-weight: 900;
+        content: "Phone :";
+    }
+    .addressField::before{
+        font-weight: 900;
+        content: "Address: ";
+    }
+    .itemsField::before{
+        font-weight: 900;
+        content: "Order: ";
+    }
+    
+    .tableContent td {
+        position: relative;
+        /* right: 10%; */
+
+        border: none;
+        /* border-left: 1px solid #000; 
+        border-right: 1px solid #000;  */
+        border-bottom:none; /* Optional: border around table cells */
+        padding: 10px;
+        display: block;
+        font-size: 1.8em;
+        width: 130%;
+    }
+    .paymethodField{
+        color: transparent;
+    }
+}

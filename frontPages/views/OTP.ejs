@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <title>OTP</title>
+</head>
+<body>
+    <div class="logo-container">
+        <a href="/home"><img src="imgs/logo.PNG" class="logo"></a>
+    </div>
+    <div class="login-container">
+        <h2>User verify</h2>
+        <form action="/login" method="post">
+            <input type="number" placeholder="code" name="OTP" required>
+            <button type="submit">verify</button>
+        </form>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const loginForm = document.querySelector("form")
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault()
+        const fd = new FormData(loginForm)
+
+        const urlEncodedData = new URLSearchParams(fd).toString();
+        fetch("/api/auth/OTP",{
+        body:urlEncodedData,
+        method:"POST",
+        headers:{
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        }).then(response=>{
+        if(response.ok){
+            Swal.fire({
+            "icon":"success",
+            "title":"Welcome",
+            "confirmButtonColor": "#c01836",
+            });
+            setTimeout(()=>{
+                window.location.href = "/"
+            },1500)
+            }else{
+            return response.text().then(errMsg => {
+                Swal.fire({
+                icon: "error",
+                title: "Wrong code, try again" ,
+                "confirmButtonColor": "#c01836",
+                });
+            });
+            }
+        })
+
+    });
+</script>
+</body>
+</html>

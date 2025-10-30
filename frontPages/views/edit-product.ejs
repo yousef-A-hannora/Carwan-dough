@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--=== Coding by CodingLab | www.codinglabweb.com === -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="/css/style.css">
+     
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="/css/content.css">
+    <title>Admin Dashboard Panel</title> 
+</head>
+<body>
+<%- include("Bases/adminBase") %>
+
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-files-landscapes"></i>
+                    <span class="text">Content</span>
+                </div>
+
+            </div>
+            <main class="edit">
+                <h2 style="align-self: flex-start;">Edit Product</h2>
+                <a href="/content" style="align-self: flex-end;"><span class="close-button" id="closeEditPasswordModal" style="font-size: 3em;">&times;</span></a>
+                <form action="/api/admin/content/edit-product" method="post" enctype="multipart/form-data" style="width: 80%;">
+                    <input type="hidden" name="product_id" value="<%= product.id %>">
+                    <div class="input-group">
+                        <label for="Category">Category</label>
+                        <select name="Category" id="Category">
+                          <% for(let category of cats){ %>
+                            <% if(category.id == product.categoryId){ %>
+                                <option value="<%= category.id %>" selected><%= category.name %></option>
+                            <% }else{ %>
+                                <option value="<%= category.id %>"><%= category.name %></option>
+                            <% } %>
+                          <% } %>
+                        </select>
+                      </div>
+                    <div class="input-group">
+                      <label for="product-name">Product Name</label>
+                      <input type="text" id="product-name" name="product_name" required value="<%= product.name %>">
+                    </div>
+                    <div class="input-group">
+                      <label for="product-description">Product Description</label>
+                      <textarea id="product-description" name="product_description" ><%= product.description %></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-price">Product Price</label>
+                        <input type="number" id="product-price" name="product_price" value="<%= product.price %>" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-image">Current Image</label>
+                        <img src="/products/images/<%= product.photo %>" alt="Product Image" style="max-width: 200px;">
+                    </div>
+                    <div class="input-group">
+                      <label for="product-image">New Image</label>
+                      <input type="file" id="product-image" name="product_image" value="">
+                    </div>
+                    <div class="input-group">
+                        <label for="product-image">Current Video</label>
+                        <video autoplay muted class="edit-video">
+                            <source src="/products/videos/<%= product.video %>" >
+                        </video>                    
+                    </div>
+                    <div class="input-group">
+                        <label for="product-image">New Video</label>
+                        <input type="file" id="product-image" name="product_video" value="">
+                    </div>
+
+                    <button type="submit" class="submit-button">Edit Product</button>
+                  </form>
+            </main>
+<%- include("Bases/adminBaseCloser") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const form = document.querySelector('form');
+
+        form.addEventListener("submit",(element)=>{
+            element.preventDefault();
+            const fd = new FormData(form);
+
+        fetch("/api/admin/content/edit-product",{
+            body:fd,
+            method: "PUT",
+        }).then(response => {
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Product edited successfully",
+                    "confirmButtonColor": "#c01836",
+                });
+                setTimeout(()=>{
+                    window.location.href = "/content";                   
+                },1000)
+            } else {
+                return response.text().then(errMsg => {
+                    Swal.fire({
+                    icon: "error",
+                    title: "Error happened: " + errMsg,
+                    "confirmButtonColor": "#c01836",
+                    });
+                });
+            }
+        })
+    })
+    </script>
+</body>
+</html>

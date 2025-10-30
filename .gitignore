@@ -1,0 +1,5 @@
+node_modules
+# Keep environment variables out of version control
+.env
+namecheap-order-163852757.pdf
+Security - My Account Panel - Namecheap.com.pdf

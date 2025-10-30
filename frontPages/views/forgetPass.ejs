@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <title>Forget pass</title>
+</head>
+<body>
+    <div class="logo-container">
+        <a href="/home"><img src="imgs/logo.PNG" class="logo"></a>
+    </div>
+    <div class="login-container">
+        <h2>Reset password</h2>
+        <form action="/login" method="post">
+            <input type="text" placeholder="Write your email" name="email" required>
+            <button type="submit">OK</button>
+        </form>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const loginForm = document.querySelector("form")
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault()
+        const fd = new FormData(loginForm)
+
+        const urlEncodedData = new URLSearchParams(fd).toString();
+        fetch("/api/auth/forgetPass",{
+        body:urlEncodedData,
+        method:"POST",
+        headers:{
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        }).then(response=>{
+        if(response.ok){
+            Swal.fire({
+            "icon":"success",
+            "title":"Code sent to your email",
+            "confirmButtonColor": "#c01836",
+            });
+            setTimeout(()=>{
+                window.location.href = "/OTP-pass"
+            },1500)
+            }else{
+            return response.json().then(errMsg => {
+                Swal.fire({
+                icon: "error",
+                title: errMsg.msg ,
+                "confirmButtonColor": "#c01836",
+                });
+            });
+            }
+        })
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<style>
+    .sharebox-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+        margin: auto;
+    }
+    .address-style{
+        padding: 5px;
+        direction:rtl;font-size: 1.5vw;
+        width: 100%;
+        background-color: var(--white);
+        border-color:var(--dark-red) ;
+        font-size: 2vw;
+        color: #5c0112;
+        margin-bottom: 10px;
+    }
+    h3{
+        font-size:2vw;
+        color:#8b021b;
+        margin-bottom: 0;
+        align-self: flex-start;
+    }
+    .submit-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 1.2em;
+        color: white;
+        background-color: var(--red);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+
+    }
+    #note{
+    font-size: 1.5vw;
+    margin: 10px;
+    }
+@media(max-width:700px){
+    .address-style{
+        direction:rtl;font-size: 4vw;
+    }
+    .sharebox-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin: auto;
+    }
+    #note{
+    font-size: 3.5vw;
+    }
+    h3{
+        font-size:6vw;
+    }
+}
+</style>
+
+<div class="info-container">
+<p class="description"><%= product.description %></p>
+<div class="price">Price start from: <span id="product-price"><%= product.price %> egp</span></div>
+
+
+<form action="" method="post" class="sharebox-form">
+    <!-- Submit Button -->
+    <h3>Notes: </h3>
+    <textarea class="address-style" name="notes" id="note" rows="3"></textarea>
+    <button type="submit" class="submit-button">Order Now</button>
+</form>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+const form = document.querySelector(".sharebox-form");
+const note = document.getElementById("note");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Collect all input fields into an object
+    const inputFields = form.querySelectorAll("input[type='number']");
+    const formData = note.value;
+
+
+    // Show a message if no donuts are selected
+    
+    if (!formData) {
+        Swal.fire({
+                icon: "error",
+                title: `You have to write order details`,
+                "confirmButtonColor": "#c01836",
+        });
+        return;
+    }
+
+    // Send the data to the "shareboxes" endpoint
+    try {
+        const response = await fetch("/api/user/order/customOrder", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({"prodId":'<%= product.id %>',"details":{"details":formData}}),
+        });
+        
+        const usrEncodedMessage = encodeURIComponent(formData);
+        if (response.ok) {
+            Swal.fire({
+                icon: "success",
+                title: "You will be redirected to Whatsapp to send order to team for pricing",
+                "confirmButtonColor": "#c01836",
+            });
+            setTimeout(()=>{
+                window.location.href = `https://wa.me/+201556364646?text=النوع(${'<%= product.name %>'}):${usrEncodedMessage}`;                   
+            },1000)
+            setTimeout(()=>{
+                window.location.href = `/CategoryProducts/<%= product.categoryId %>`;                   
+            },1500)
+        } else {
+            note.textContent = "Failed to submit your order. Please try again.";
+            note.style.color = "red";
+        }
+    } catch (error) {
+        console.error("Error submitting form:", error);
+        note.textContent = "An error occurred while submitting your order.";
+        note.style.color = "red";
+    }
+});
+});
+
+</script>

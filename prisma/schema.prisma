@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  phone        String   @unique
+  address      String?
+  email        String?  @unique
+  password     String
+  resetToken       String? 
+  resetTokenExpiry DateTime?
+  role         Roles    @default(CUSTOMER)
+  creatingDate DateTime @default(now())
+  orders       Order[]
+  reviews      Review[]
+  redFlags     Int      @default(0) // Number of red flags for canceled orders
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  password     String
+  role         Roles    @default(ADMIN)
+  creatingDate DateTime @default(now())
+}
+
+model Category {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  image        String
+  creatingDate DateTime  @default(now())
+  isActive     Boolean   @default(true)
+  products     Product[]
+}
+
+model Product {
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String?
+  price        Float
+  current_price Float?
+  photo        String
+  video        String?
+  categoryId   Int
+  isActive     Boolean     @default(true)
+  customeInfo  Json?
+  category     Category    @relation(fields: [categoryId], references: [id])
+  reviews      Review[]
+  items        OrderItem[]
+  creatingDate DateTime    @default(now())
+  saleId        Int?
+  sale          sales?         @relation(fields: [saleId], references: [id])
+  deleted       Boolean?    @default(false)
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int?
+  sessionId     String?
+  user          User?         @relation(fields: [userId], references: [id])
+  totalPrice    Float?        @default(0)
+  address       String?
+  paymentType   PaymentType   @default(CASH_ON_DELIVERY)
+  paymentStatus PaymentStatus @default(PENDING_PAYMENT)
+  orderStatus   OrderStatus   @default(PENDING)
+  orderItems    OrderItem[]
+  orderPhones   phone[]
+  OrderRecevername String?
+  OrderNotes    String?
+  creatingDate  DateTime      @default(now())
+  deliveryDate  DateTime?     @db.Date
+}
+
+model phone{
+  id           Int      @id @default(autoincrement())
+  number       String
+  OrderId      Int
+  order        Order   @relation(fields: [OrderId], references: [id])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int     @default(1)
+  price     Float
+  notes     Json? // Optional notes for the product
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  productId    Int
+  userId       Int
+  rating       Int      @default(1)
+  comment      String
+  creatingDate DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id])
+}
+
+model workDays {
+  id          Int    @id @default(autoincrement())
+  workingDays String // Stored as a comma-separated list of days (e.g., "Monday,Tuesday")
+}
+
+model sales {
+  id              Int      @id @default(autoincrement())
+  startDate       DateTime @db.Date
+  endDate         DateTime @db.Date
+  salesPrecentage Float
+  isActive        Boolean? @default(true)
+  products        Product[] 
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+enum Roles {
+  CUSTOMER
+  ADMIN
+}
+
+enum PaymentType {
+  CASH_ON_DELIVERY
+  CREDIT_CARD
+}
+
+enum PaymentStatus {
+  PENDING_PAYMENT
+  PAID
+}
+
+enum OrderStatus {
+  PENDING
+  PENDING_DELIVERY
+  COMPLETED
+  CANCELED
+}

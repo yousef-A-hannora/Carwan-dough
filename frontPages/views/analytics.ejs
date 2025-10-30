@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!--=== Coding by CodingLab | www.codinglabweb.com === -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="css/style.css">
+     
+    <!----===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/analytics.css">
+    <link rel="stylesheet" href="css/orders.css">
+    <title>Admin Dashboard Panel</title> 
+</head>
+<body>
+<%- include("Bases/adminBase") %>
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-chart"></i>
+                    <span class="text">Statistics</span>
+                </div>
+            </div>
+
+            <main>
+
+                <form method="GET" action="" class="date-range-form">
+                    <div>
+                        <label>From</label>
+                        <input type="date" name="from" id="from">
+                    </div>
+                    <div>
+                        <label>To</label>
+                        <input type="date" name="to" id="to">
+                    </div>
+                    <button class="open-modal-btn">Find</button>
+                </form>
+
+                <div class="statistisc-boxes">
+                    <div class="total-boxes">
+                        <div class="total orders">
+                            <i class="uil uil-truck"></i>
+                            <span class="text">Total Orders: <%= done+canceled %></span>
+                            <span class="number">Done: <%= done %></span>
+                            <span class="number">canceled: <%= canceled %></span>
+                        </div>
+
+                        <div class="total earnings">
+                            <i class="uil uil-usd-circle"></i>
+                            <span class="text">Total earnings</span>
+                            <span class="number"><%= earning %></span>
+                        </div>
+
+                        <div class="total customers">
+                            <i class="fa-regular fa-user"></i>
+                            <span class="text"> Customers</span>
+                            <span class="number"><%= users.length %></span>
+                        </div>
+                    </div>
+                    <div class="users-statistics">
+                            <h1>Users Info<br></h1>
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>completed Orders</th>
+                                    <th>Total Pay</th>
+                                    <th>canceled orders</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Row -->
+                                <% if(Array.isArray(users)){ %>
+                                <% for(let user of users){ %>
+                                <tr class="<% if(user.redFlags > 0){ %> red-flag <% } %>">
+                                    <td><%= user.name %></td>
+                                    <td><%= user.phone %></td>
+                                    <td class="address"><%= user.address %></td>
+                                    <td><%= user.done %></td>
+                                    <td><%= user.total %></td>
+                                    <td><%= user.canceled %></td>
+                                    <td style="width: 0px;" ><button userId="<%= user.id %>" class="open-modal-btn unflage">Unflage</button></td>
+                                </tr>
+                                <% } %>
+                                <% } %>
+                                </tbody>
+                                </table>
+                    </div>
+                    
+                    <div class="products-statistics chart-container">
+                        <h1>Products Info</h1>
+                        <canvas id="donutSalesChart"></canvas>
+                    </div>
+            </main>
+<%- include("Bases/adminBaseCloser") %>
+    <script src="https://kit.fontawesome.com/06ef2464e4.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("unflage")) {
+        const button = e.target;
+        const userId = button.getAttribute("userId");
+
+        // Make the fetch request
+        fetch("/api/user/operations/unflage", {
+            method: "PATCH",
+            body: JSON.stringify({ id: userId }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // If the request is successful, find the parent <tr> and remove the class
+                    const tr = button.closest("tr"); // Get the closest parent <tr> of the button
+                    // console.log(tr)
+                    if (tr.classList.contains("red-flag")) {
+                        // console.log("this tr contains red-flag")
+                        tr.classList.remove("red-flag");
+                    }
+                } else {
+                    console.error("Failed to unflag the user.");
+                }
+            })
+            .catch((err) => {
+                console.error("Error:", err);
+            });
+    }
+});
+    </script>
+    <script>
+        // Sample data for donuts sold by type
+        const Products = '<%= products %>'; // Safely embed Base64 string
+        const donutSalesData = JSON.parse(atob(Products)); // Decode and parse
+
+        
+        // console.log(donutSalesData["chocolate"])
+        const donutTypes = Object.keys(donutSalesData) //['Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry'];
+        const donutsSold = Object.values(donutSalesData) //[120, 90, 80, 50, 70,12, 90, 80, 50, 70,120, 90, 80, 50, 70,12, 90, 80, 50, 70]; // Replace with dynamic data if needed
+    
+        const ctx = document.getElementById('donutSalesChart').getContext('2d');
+        const donutSalesChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+    labels: donutTypes,
+    datasets: [{
+    label: 'Sold',
+    data: donutsSold,
+    backgroundColor: 'rgba(192, 24, 54, 0.7)', // Primary color
+    borderColor: '#c01836',
+    borderWidth: 1
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        tooltip: {
+        enabled: true,
+        callbacks: {
+            label: function(context) {
+            return ` ${context.dataset.label}: ${context.parsed.y}`;
+            }
+        }
+        },
+        datalabels: {
+        anchor: 'end',
+        align: 'top',
+        color: '#000',
+        font: {
+            weight: 'bold'
+        },
+        formatter: function(value) {
+            return value; // Shows the value directly on each bar
+        }
+        }
+    },
+    scales: {
+        x: {
+        beginAtZero: true,
+        title: {
+            display: true,
+            text: 'Donut Type'
+        }
+        },
+        y: {
+        beginAtZero: true,
+        title: {
+            display: true,
+            text: 'Number of Donuts Sold'
+        }
+        }
+    }
+    },
+//   plugins: [ChartDataLabels] // Load ChartDataLabels plugin
+});
+</script>
+</body>
+</html>
