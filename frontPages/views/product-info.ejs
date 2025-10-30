@@ -59,6 +59,8 @@
             <%- include("OddComponents/ShareBoxForm") %>
         <% }else if(product.category.name==="custom orders"){ %>
             <%- include("OddComponents/customProductForm") %>
+        <% }else if(product.category.name==="bundels"){ %>
+            <%- include("OddComponents/bundels") %>
         <% }else{ %>
 
             <div class="info-container">

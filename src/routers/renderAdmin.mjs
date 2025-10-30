@@ -12,22 +12,37 @@ import {
 } from "../DBOperations/Gitters.mjs";
 
 import { usersAnalysis,ordersAnalysis } from "../DBOperations/Statistics.mjs";
+import { PrismaClient } from "@prisma/client";
 
 const AdminRenderRouter = Router();
-
+const prisma = new PrismaClient();
 //---------------------Admin pages--------------------
 // AdminRenderRouter.use(adminOnly)
 AdminRenderRouter.get("/content", async (req, res) => {
-  const categories = await getAllCategories();
-  const CategoryAndProducts = await getCategoryWithProducts();
-  const workingDays = await getWorkingDays();
-  const data = {
-    cats: categories,
-    catsWithProds: CategoryAndProducts,
-    workdays: workingDays,
-  };
-  res.render("content", data);
+  try {
+    const categories = await getAllCategories();
+    const CategoryAndProducts = await getCategoryWithProducts();
+    const workingDays = await getWorkingDays();
+
+    // ✅ Fetch all products for bundle modal
+    const products = await prisma.product.findMany({
+      where: { deleted: false }
+    });
+
+    const data = {
+      cats: categories,
+      catsWithProds: CategoryAndProducts,
+      workdays: workingDays,
+      products, // ✅ send to EJS
+    };
+
+    res.render("content", data);
+  } catch (err) {
+    console.error("Error rendering /content:", err);
+    res.status(500).send("Server Error");
+  }
 });
+
 
 AdminRenderRouter.get("/analytics",async (req, res) => {
   try{
@@ -52,9 +67,28 @@ AdminRenderRouter.get("/edit-category/:id", async (req, res) => {
 });
 
 AdminRenderRouter.get("/edit-product/:id", async (req, res) => {
+  const productId = parseInt(req.params.id);
+
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    include: {
+      category: true
+    }
+  });
+
   const categories = await getAllCategories();
-  const product = await getProductbyId(parseInt(req.params["id"]));
-  res.render("edit-product", { product: product, cats: categories });
+
+  // Load all active products to list bundle choices
+  const allProducts = await prisma.product.findMany({
+    where: { isActive: true, deleted: false },
+    select: { id: true, name: true }
+  });
+
+  res.render("edit-product", {
+    product: product,
+    cats: categories,
+    allProducts: allProducts
+  });
 });
 
 AdminRenderRouter.get("/orders", async (req, res) => {

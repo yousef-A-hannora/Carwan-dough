@@ -160,6 +160,7 @@
         }
 
         function makeSammaryList(orders){
+            console.log(orders);
             const itemsUniqueList = {}
             // console.log(orders);
             orders.forEach(order => {
@@ -172,7 +173,27 @@
                                 itemsUniqueList[`mini ${prod}`] = item.notes[prod]*4;
                             }
                         })
+                    }
 
+                    if (item.product.category["name"] === 'bundles') {
+                    let bundleProducts = item.product.customeInfo;
+
+                    // If notes is stringified JSON in DB
+                    if (typeof bundleProducts === "string") {
+                        try {
+                            bundleProducts = JSON.parse(bundleProducts);
+                        } catch {
+                            bundleProducts = {};
+                        }
+                    }
+
+                    // Now read the "products" key inside:
+                    const productsObj = bundleProducts.products || {};
+                    console.log(productsObj);
+                    Object.keys(productsObj).forEach(prod => {
+                        const amount = productsObj[prod] * item.quantity; // multiply by item count
+                        itemsUniqueList[prod] = (itemsUniqueList[prod] || 0) + amount;
+                    });
                     }
                     if(itemsUniqueList[`${item.product.name}`]){
                         itemsUniqueList[`${item.product.name}`] += item.quantity;

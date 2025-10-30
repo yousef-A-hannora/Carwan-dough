@@ -156,12 +156,35 @@
                             </select>
                           </div>
                         </div>
+                        <!-- Bundle Products List -->
+                        <div id="bundleProductsWrapper" style="display:none; max-height:220px; overflow-y:auto; border:1px solid #ccc; padding:10px; margin-top:10px;">
+                          <h3>Select Products for Bundle</h3>
+
+                          <% for (let p of products) { %>
+                          <div style="display:flex; align-items:center; gap:10px; margin:5px 0;">
+                            <input type="checkbox" class="bundleItemCheck" data-id="<%= p.name %>">
+                            <label><%= p.name %></label>
+                            <input type="number" class="bundleQtyInput" data-id="<%= p.name %>" min="1" disabled style="width:70px;">
+                          </div>
+                          <% } %>
+                        </div>
+
+                        <input type="hidden" id="bundleData" name="bundleData">
                       </div>
                       <button type="submit" class="submit-button">Add Product</button>
                     </form>
                   </div>
                 </div>
-            
+ 
+                      <!-- Product List -->
+                      <div id="bundleProductsWrapper" style="display:none; max-height:300px; overflow-y:auto; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                      </div>
+
+                      <button type="submit" class="submit-button">Create Bundle</button>
+                    </form>
+
+                  </div>
+                </div>
                 <!-- Add category Modal -->
                 <div id="editPasswordModal" class="modal">
                   <div class="modal-content">
@@ -283,49 +306,76 @@
   //|-------------------------------------------------------------------|
 
   function toggleExtraFields() {
-    const categorySelect = document.getElementById("Category");
-    const extraFields = document.getElementById("extraFields");
-    // Replace "ShareBox" with the actual value for the ShareBox category
-    if (categorySelect.options[categorySelect.selectedIndex].text === "share boxs") {
-      extraFields.style.display = "block";
-    } else {
-      extraFields.style.display = "none";
-      
-    }
+  const categorySelect = document.getElementById("Category");
+  const extraFields = document.getElementById("extraFields");
+  const bundleWrapper = document.getElementById("bundleProductsWrapper");
+
+  const selectedText = categorySelect.options[categorySelect.selectedIndex].text;
+
+  if (selectedText === "share boxs") {
+    extraFields.style.display = "block";
+    bundleWrapper.style.display = "none";
+  } 
+  else if (selectedText === "bundles") {
+    extraFields.style.display = "none";
+    bundleWrapper.style.display = "block";
   }
+  else {
+    extraFields.style.display = "none";
+    bundleWrapper.style.display = "none";
+  }
+}
+document.querySelectorAll('.bundleItemCheck').forEach(chk => {
+  chk.addEventListener('change', () => {
+    const qtyInput = document.querySelector(`.bundleQtyInput[data-id="${chk.dataset.id}"]`);
+    qtyInput.disabled = !chk.checked;
+    if (!chk.checked) qtyInput.value = "";
+  });
+});
 
 
-  productForm.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const fd = new FormData(productForm);
+productForm.addEventListener('submit',(e)=>{
+  e.preventDefault();
 
-    const urlEncodedData = new URLSearchParams(fd).toString();
-    fetch("/api/admin/content/add-product",{
-      body:fd,
-      method:"POST"
-    }).then(response => {
-        if (response.ok) {
+  // Build bundle dictionary
+  const bundleDict = {};
+  document.querySelectorAll('.bundleItemCheck').forEach(chk => {
+    if (chk.checked) {
+      const qtyInput = document.querySelector(`.bundleQtyInput[data-id="${chk.dataset.id}"]`);
+      if (qtyInput.value && qtyInput.value > 0) {
+        bundleDict[chk.dataset.id] = parseInt(qtyInput.value);
+      }
+    }
+  });
+
+  // put bundle JSON into hidden input
+  document.getElementById("bundleData").value = JSON.stringify(bundleDict);
+
+  const fd = new FormData(productForm);
+
+  fetch("/api/admin/content/add-product",{
+    body:fd,
+    method:"POST"
+  }).then(response => {
+      if (response.ok) {
+        Swal.fire({
+            icon: "success",
+            title: "Product Added successfully",
+            "confirmButtonColor": "#c01836",
+        });
+        productForm.reset()
+        setTimeout(()=> window.location.href = "/content" ,100000)
+      } else {
+        return response.text().then(errMsg => {
           Swal.fire({
-              icon: "success",
-              title: "Product Added successfully",
-              "confirmButtonColor": "#c01836",
+            icon: "error",
+            title: "Error happened: " + errMsg,
+            "confirmButtonColor": "#c01836",
           });
-          productForm.reset()
-          setTimeout(()=>{
-                    window.location.href = "/content";                   
-          },1000)
-        } else {
-          return response.text().then(errMsg => {
-            Swal.fire({
-              icon: "error",
-              title: "Error happened: " + errMsg,
-              "confirmButtonColor": "#c01836",
-            });
-          });
-        }
+        });
+      }
   })
-  })
-
+});
   //|-------------------------------------------------------------------|
   //|__________________________Add category form________________________|
   //|-------------------------------------------------------------------|
@@ -348,7 +398,7 @@
           categoryForm.reset()
           setTimeout(()=>{
                     window.location.href = "/content";                   
-          },1000)
+          },100000)
         } else {
           return response.text().then(errMsg => {
             Swal.fire({
@@ -654,6 +704,8 @@ document.addEventListener("change",(e)=>{
               });
         }
       }
+
+
   </script>
 </body>
 </html>
