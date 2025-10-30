@@ -36,9 +36,14 @@
         font-weight: 900;
         content: "Phone :";
     }
+
     .addressField::before{
         font-weight: 900;
         content: "Address: ";
+    }
+    .paymethodField::before{
+        font-weight: 900;
+        content: "payment:";
     }
     .itemsField::before{
         font-weight: 900;

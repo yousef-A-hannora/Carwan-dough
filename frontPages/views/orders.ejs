@@ -111,6 +111,14 @@
                     </ul>
                     <hr style="border-top: 1px dashed red; margin: 10px 0;">
                     <li style="list-style: none;">Total => <%= order.totalPrice %> Egp</li>
+                    <li style="list-style: none;">
+                        Payment: 
+                        <% if(order.paymentStatus === "PAID"){ %>
+                            ✅ Prepaid
+                        <% }else{ %>
+                            💵 Cash on delivery
+                        <% } %>
+                    </li>
                 </td>
                 <!-- <td></td> -->
                 <% if(order.paymentStatus === "PAID"){ %>

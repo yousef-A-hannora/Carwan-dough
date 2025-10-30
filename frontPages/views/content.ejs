@@ -436,36 +436,49 @@
   //|__________________________Remove product___________________________|
   //|-------------------------------------------------------------------|
 
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", async (e) => {
   if (e.target.classList.contains("remove-button")) {
-    // Retrieve the productId from the button's data-id attribute
+
     const productId = e.target.getAttribute("prod-id");
 
-    fetch(`/api/admin/content/deleteProduct/${productId}`,{method:"DELETE"}).then(responce=>{
-      if(responce.ok){
-        Swal.fire({
-          "message":"product deleted",
-          "icon":"success",
-          "confirmButtonColor": "#c01836",
-        });
-        setTimeout(()=>{
-          window.location.href="/content"
-        },1000);
-        // console.log("Deleted")
-      }else{
-        return responce.text().then(err =>{
-          Swal.fire({
-            "message":"Error happened Try again",
-            "icon":"error",
-            "confirmButtonColor": "#c01836",
-          });
-          console.log("Error, couldn't delete the product")
-        })
-      }
-    })
-  }
-})
+    // ✅ Show confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This product will be removed!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c01836",
+      cancelButtonColor: "#555",
+      confirmButtonText: "Yes, delete it!",
+    });
 
+    // ✅ If user cancels, do nothing
+    if (!result.isConfirmed) return;
+
+    // ✅ Proceed with delete request
+    fetch(`/api/admin/content/deleteProduct/${productId}`, { method: "DELETE" })
+      .then(response => {
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Product deleted!",
+            confirmButtonColor: "#c01836",
+          });
+          setTimeout(() => {
+            window.location.href = "/content";
+          }, 1000);
+        } else {
+          return response.text().then(err => {
+            Swal.fire({
+              icon: "error",
+              title: "Error occurred, try again",
+              confirmButtonColor: "#c01836",
+            });
+          });
+        }
+      });
+  }
+});
   //|-------------------------------------------------------------------|
   //|__________________________Activate product_________________________|
   //|-------------------------------------------------------------------|
