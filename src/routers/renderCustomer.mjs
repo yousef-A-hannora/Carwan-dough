@@ -36,6 +36,19 @@ customerRenderRouter.get("/cart",authorizedOnly, async (req, res) => {
     
 });
 
+// My Orders page (customer)
+customerRenderRouter.get("/my-orders", authorizedOnly, (req, res) => {
+    try{
+        let username;
+        let auth = false;
+        if(req.isAuthenticated()){
+            auth = true;
+            username = req.user.name;
+        }
+        res.render("my-orders", { isAuth: auth, username: username });
+    }catch(err){return res.status(400).send("Error happened try again")}
+});
+
 customerRenderRouter.get("/product-info/:prodId",async (req, res) => {
     try{
         let username

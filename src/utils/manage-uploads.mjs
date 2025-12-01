@@ -8,7 +8,7 @@ const vidsPath = path.join(process.cwd(), '/frontPages/public/products/videos');
 const sanitizeFilename = (filename) => filename.replace(/[^a-z0-9_.-]/gi, '_').toLowerCase();
 
 const fileFilter = (req, file, callback) => {
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.mp4', '.avi','.m4v'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.mp4', '.avi','.m4v','.webp'];
     const fileExt = path.extname(file.originalname).toLowerCase();
 
     if (allowedExtensions.includes(fileExt)) {

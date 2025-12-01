@@ -187,7 +187,6 @@ export async function getOrderHistory() {
     }catch(err){console.log(err);}
 }
 
-
 export async function getActiveSales() {
     try{
         const sales = await prisma.sales.findMany({
@@ -196,4 +195,29 @@ export async function getActiveSales() {
         })
         return sales
     }catch(err){console.log(err)}
+}
+
+// Get all orders for a specific user with items, products, and phones
+export async function getUserOrdersWithDetails(userId) {
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                userId: userId,
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true,
+                    },
+                },
+                orderPhones: true,
+            },
+            orderBy: {
+                id: "desc",
+            },
+        });
+        return orders;
+    } catch (err) {
+        console.log(err);
+    }
 }

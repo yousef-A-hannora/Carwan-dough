@@ -8,10 +8,15 @@ import {
   addCustomOrder,
   AddOrderPhone,
   DeleteOrderItem,
+  cancelUserOrder,
 } from "../DBOperations/OrderManagment.mjs";
-import { getuserOrder } from "../DBOperations/Gitters.mjs";
+import {
+  getuserOrder,
+  getUserOrdersWithDetails,
+} from "../DBOperations/Gitters.mjs";
 import { productQuantityValidation } from "../utils/validation.mjs";
 import { validationResult, matchedData } from "express-validator";
+import { authorizedOnly } from "../utils/AccessControle.mjs";
 const ordersManager = Router();
 
 ordersManager.patch(
@@ -139,6 +144,66 @@ ordersManager.patch("/orderPayed/:ordeId", async (req, res) => {
     res.status(500).send("Error while change the Order status");
   }
 });
+
+// Customer: get all their orders (active + past)
+ordersManager.get("/my-orders", authorizedOnly, async (req, res) => {
+  try {
+    const orders = await getUserOrdersWithDetails(req.user.id);
+    const activeOrders = [];
+    const pastOrders = [];
+
+    if (orders && Array.isArray(orders)) {
+      orders.forEach((order) => {
+        if (
+          order.orderStatus === "COMPLETED" ||
+          order.orderStatus === "CANCELED"
+        ) {
+          pastOrders.push(order);
+        } else {
+          activeOrders.push(order);
+        }
+      });
+    }
+
+    res.json({ activeOrders, pastOrders });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Couldn't load your orders");
+  }
+});
+
+// Customer: cancel own order if still cancellable
+ordersManager.patch(
+  "/cancelMyOrder/:ordeId",
+  authorizedOnly,
+  async (req, res) => {
+    try {
+      const {
+        params: { ordeId },
+      } = req;
+
+      const result = await cancelUserOrder(ordeId, req.user.id);
+
+      if (result === "NOT_FOUND") {
+        return res.status(404).send("Order not found");
+      }
+      if (result === "NOT_OWNER") {
+        return res.status(403).send("You can't cancel this order");
+      }
+      if (result === "NOT_CANCELLABLE") {
+        return res.status(400).send("Order is no longer cancellable");
+      }
+      if (result === "ERROR") {
+        return res.status(500).send("Error while cancelling the order");
+      }
+
+      res.sendStatus(200);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error while cancelling the order");
+    }
+  }
+);
 
 ordersManager.post("/customOrder", async (req, res) => {
   try {

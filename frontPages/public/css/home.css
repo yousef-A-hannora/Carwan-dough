@@ -44,11 +44,12 @@ nav .logo-container{
 }
 .nav-icons{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end;
     align-items: center;
-    width: 33%;
+    gap: 12px;
+    width: 40%;
     box-sizing: border-box;
-    padding-right: 10px;
+    padding-right: 16px;
 }
 @font-face {
     font-family: "monster";
@@ -67,7 +68,27 @@ nav .logo-container{
     color:var(--white)
 }
 .nav-icon-container{
-    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+.nav-icon-container i{
+    color: var(--white);
+}
+.nav-icon-container:hover{
+    background-color: rgba(241, 236, 231, 0.14);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+}
+.nav-icon-container:active{
+    transform: translateY(0);
+    box-shadow: none;
+    background-color: rgba(241, 236, 231, 0.24);
 }
 .trolly path{
     fill: var(--white);

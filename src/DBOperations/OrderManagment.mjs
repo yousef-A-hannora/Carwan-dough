@@ -284,3 +284,40 @@ export async function addCustomOrder(prodId, details, session, userId, auth) {
     console.log(err);
   }
 }
+
+// Allow a logged-in customer to cancel their own order if still cancellable
+export async function cancelUserOrder(orderId, userId) {
+  orderId = parseInt(orderId);
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+
+    if (!order) {
+      return "NOT_FOUND";
+    }
+
+    if (order.userId !== userId) {
+      return "NOT_OWNER";
+    }
+
+    // Only allow cancellation for non-final states
+    if (
+      order.orderStatus === "COMPLETED" ||
+      order.orderStatus === "CANCELED"
+    ) {
+      return "NOT_CANCELLABLE";
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { orderStatus: "CANCELED" },
+    });
+
+
+    return "OK";
+  } catch (err) {
+    console.log(err);
+    return "ERROR";
+  }
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="shortcut icon" href="/imgs/mini-logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/orders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .my-orders-container{
+            padding: 24px 16px 40px;
+            max-width: 1100px; /* similar to max-w-4xl */
+            margin: 0 auto;
+        }
+        .my-orders-title{
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .orders-section-title{
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .orders-section-title i{
+            font-size: 1.1rem;
+        }
+        .orders-list{
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+        .order-card{
+            width: 100%;
+            max-width: 900px; /* similar to max-w-3xl/4xl look */
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid #f3c5cf;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+        .order-card-header{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .order-id-text{
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .order-status-badge{
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+        .status-pending,
+        .status-pending_delivery{
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-completed{
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-canceled{
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .order-items{
+            margin: 8px 0;
+            padding-left: 18px;
+            font-size: 0.9rem;
+        }
+        .order-meta{
+            font-size: 0.9rem;
+            color: #414040;
+        }
+        .order-actions{
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .cancel-order-btn{
+            background-color: #cf2115c0;
+            color: #fff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+            transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .cancel-order-btn:hover{
+            background-color: #b11d30;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .cancel-order-btn:active{
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .empty-text{
+            font-size: 0.95rem;
+            color: #414040;
+        }
+        @media (max-width: 768px){
+            .my-orders-container{
+                padding: 20px 12px 32px;
+            }
+            .order-card{
+                max-width: 100%;
+                padding: 14px 14px 16px;
+            }
+            .order-id-text{
+                font-size: 1.05rem;
+            }
+            .order-status-badge{
+                font-size: 0.85rem;
+            }
+            .order-items{
+                font-size: 0.95rem;
+            }
+            .order-meta{
+                font-size: 0.95rem;
+            }
+        }
+        @media (max-width:600px){
+            .order-card-header{
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .orders-section-title{
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include("Bases/CustomerHeader") %>
+
+    <div class="my-orders-container">
+        <h1 class="head-lines my-orders-title">My Orders</h1>
+        <hr class="style-five">
+
+        <section>
+            <h2 class="orders-section-title">
+                <i class="fas fa-clock"></i>
+                Active Orders
+            </h2>
+            <div id="active-orders" class="orders-list">
+                <p class="empty-text">Loading your active orders...</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="orders-section-title">
+                <i class="fas fa-history"></i>
+                Past Orders
+            </h2>
+            <div id="past-orders" class="orders-list">
+                <p class="empty-text">Loading your past orders...</p>
+            </div>
+        </section>
+    </div>
+
+    <%- include("Bases/CustomerFooter") %>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/JS/my-orders.js"></script>
+</body>
+</html>
+
+
