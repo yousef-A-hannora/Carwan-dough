@@ -157,19 +157,23 @@
             orders.forEach(order => {
                 order.orderItems.forEach((item)=>{
                     if(item.product.category["name"]==='share boxs'){
-                        Object.keys(item.notes).forEach(prod=>{
-                            if(itemsUniqueList[`mini ${prod}`]){
-                                itemsUniqueList[`mini ${prod}`] += item.notes[prod]*4;
-                            }else{
-                                itemsUniqueList[`mini ${prod}`] = item.notes[prod]*4;
-                            }
-                        })
-
-                    }
-                    if(itemsUniqueList[`${item.product.name}`]){
-                        itemsUniqueList[`${item.product.name}`] += item.quantity;
-                    }else{
-                        itemsUniqueList[`${item.product.name}`] = item.quantity;
+                        // For share boxes, only count the items inside, not the box itself
+                        if(item.notes && typeof item.notes === 'object'){
+                            Object.keys(item.notes).forEach(prod=>{
+                                if(itemsUniqueList[`mini ${prod}`]){
+                                    itemsUniqueList[`mini ${prod}`] += item.notes[prod]*4;
+                                }else{
+                                    itemsUniqueList[`mini ${prod}`] = item.notes[prod]*4;
+                                }
+                            })
+                        }
+                    } else {
+                        // For regular products, count the product itself
+                        if(itemsUniqueList[`${item.product.name}`]){
+                            itemsUniqueList[`${item.product.name}`] += item.quantity;
+                        }else{
+                            itemsUniqueList[`${item.product.name}`] = item.quantity;
+                        }
                     }
                 })
             });
@@ -209,10 +213,27 @@
             e.preventDefault();
             const filteredOrders = [];
             const filteredOrdersIds = [];
-            let date = new Date(filterDate.value).toISOString();
-            date = date.split("T")[0];
+            if (!filterDate.value) {
+                // If no date selected, show all orders
+                makeSammaryList(orders);
+                changeTableRows(orders.map(o => o.id));
+                return;
+            }
+            let selectedDate = new Date(filterDate.value);
+            // Normalize to local date (remove time component)
+            const selectedDateStr = selectedDate.toISOString().split("T")[0];
+            
             orders.forEach((order=>{
-                if(String(order.deliveryDate).split("T")[0] === date){
+                if (!order.deliveryDate) return;
+                // Handle both Date objects and date strings
+                let orderDateStr;
+                if (order.deliveryDate instanceof Date) {
+                    orderDateStr = order.deliveryDate.toISOString().split("T")[0];
+                } else {
+                    // Handle string dates
+                    orderDateStr = String(order.deliveryDate).split("T")[0];
+                }
+                if(orderDateStr === selectedDateStr){
                     filteredOrders.push(order);
                     filteredOrdersIds.push(order.id);
                 }

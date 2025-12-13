@@ -520,6 +520,8 @@ document.addEventListener("change",(e)=>{
   // Open Add Product Modal when button is clicked
   document.getElementById("openAddProductModal").onclick = function() {
     document.getElementById("addProductModal").style.display = "block";
+    // Check if share boxs is already selected and show fields
+    toggleExtraFields();
   };
   // Close Add Product Modal
   document.getElementById("closeAddProductModal").onclick = function() {
