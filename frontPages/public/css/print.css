@@ -2,63 +2,81 @@
     body {
         margin: 0;
         padding: 0;
+        background: #fff;
     }
 
-    /* Hide the non-order sections when printing */
-    nav,.deails, .top, .overview, .date-range-form, .actions,.done-btn, th,.uil.uil-bars.sidebar-toggle{
-        display: none;
+    /* Hide everything that is not order data */
+    nav.sidebar,
+    .sidebar-scrim,
+    .top,
+    .overview,
+    .date-range-form,
+    .toolbar,
+    .actions,
+    .done-btn,
+    .card-head,
+    .order-table thead,
+    .uil.uil-bars.sidebar-toggle {
+        display: none !important;
+    }
+
+    .dashboard {
+        margin-left: 0 !important;
+    }
+    .dash-content {
+        padding: 0 !important;
+    }
+    .card {
+        border: none;
+        box-shadow: none;
+    }
+    .table-scroll {
+        overflow: visible;
     }
 
     .order-table {
-        /* margin-right: 50%; */
-        width: 100%; /* Ensure table spans the full page width */
+        width: 100%;
         border-collapse: collapse;
     }
 
     .tableContent {
         page-break-before: always; /* Start each order on a new page */
-        display: block; /* Make rows block-level for better isolation */
-        /* margin-right: 200px;  */
-    }
-    .idField::before{
-        font-weight: 900;
-        content: "Order id: ";
-    }
-    .dateField::before{
-        font-weight: 900;
-        content: "Date: ";
-    }
-    .nameField::before{
-        font-weight: 900;
-        content: "Name: ";
-    }
-    .phoneField::before{
-        font-weight: 900;
-        content: "Phone :";
-    }
-    .addressField::before{
-        font-weight: 900;
-        content: "Address: ";
-    }
-    .itemsField::before{
-        font-weight: 900;
-        content: "Order: ";
-    }
-    
-    .tableContent td {
-        position: relative;
-        right: 40%;
-
-        border: none;
-        /* border-left: 1px solid #000; 
-        border-right: 1px solid #000;  */
-        border-bottom:none; /* Optional: border around table cells */
-        padding: 10px;
         display: block;
-        font-size: 2em;
-        width: 130%;
     }
-    .paymethodField{
-        color: transparent;
+
+    .tableContent td {
+        border: none;
+        border-bottom: none;
+        padding: 6px 0;
+        display: block;
+        font-size: 1.5em;
+        background: transparent !important;
+        color: #000 !important;
+        width: auto;
+        max-width: none;
+    }
+
+    .idField::before   { font-weight: 700; content: "Order id: "; }
+    .dateField::before { font-weight: 700; content: "Date: "; }
+    .nameField::before { font-weight: 700; content: "Name: "; }
+    .phoneField::before{ font-weight: 700; content: "Phone: "; }
+    .addressField::before { font-weight: 700; content: "Address: "; }
+    .itemsField::before{ font-weight: 700; content: "Order: "; }
+    .notesField::before{ font-weight: 700; content: "Notes: "; }
+
+    .itemsField .items-list li {
+        font-size: 0.95em;
+    }
+    .itemsField .sub-list {
+        padding-left: 30px;
+    }
+    .order-total-line {
+        border-top: 2px solid #000;
+        font-size: 1.1em;
+    }
+
+    /* Payment method is not needed on the kitchen slip */
+    .paymethodField {
+        display: none;
     }
 }

@@ -1,0 +1,26 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="developer" content="Yousef Hannora">
+<meta name="developer connection" content="hannorayousef@gmail.com">
+<title><%= locals.title ? locals.title + " · Carwan Dough" : "Carwan Dough" %></title>
+<link rel="shortcut icon" href="/imgs/mini-logo.png" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/css/shop.css">
+<script>
+/* scroll-reveal is progressive enhancement: hidden state is scoped to
+   <html class="js">; the failsafe below reveals everything if shop.js
+   never runs (blocked/404) so no content can stay invisible */
+document.documentElement.classList.add("js");
+addEventListener("load", function () {
+    setTimeout(function () {
+        if (!window.__cdReveal) {
+            document.querySelectorAll(".cd-reveal").forEach(function (el) {
+                el.classList.add("is-visible");
+            });
+        }
+    }, 1500);
+});
+</script>

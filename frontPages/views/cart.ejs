@@ -1,133 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout Page</title>
-    <link rel="stylesheet" href="css/cart.css">
-    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
-
+    <%- include("Bases/CustomerHead", {title: "Your cart"}) %>
+    <link rel="stylesheet" href="/css/shop-cart.css">
 </head>
 <body>
-    <div class="logo-container">
-        <a href="/home"><img src="imgs/logo.PNG" class="logo"></a>
-    </div>
-    <div class="checkout-container">
-        <h2 class="cart-title">Your Cart</h2>
+    <%- include("Bases/CustomerHeader") %>
+
+    <nav class="cd-container cd-breadcrumb" aria-label="Breadcrumb">
+        <a href="/home">Home</a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <span aria-current="page">Cart</span>
+    </nav>
+
+    <main class="cd-container cart-page">
+        <h1 class="cart-page__title">Your Cart</h1>
 
         <% if(OWI && OWI.orderItems.length > 0) { %>
-        <table class="checkout-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="cart-items">
-
+        <div class="cart-layout">
+            <section class="cart-items" aria-label="Cart items">
                 <% for(let item of OWI.orderItems) {%>
-                <tr>
-                    <td><%= item.product.name %></td>
-                    <td><%= item.product.current_price %></td>
-                    <td>
-                        <span class="quantity"><%= item.quantity %></span>
-                    </td>
-                    <td>
-                        <div style="width: 100%;;display: flex;align-items: center;justify-content: center;">
-                            <button class="delete" style="background-color: var(--red); color: white; padding: 0.5em; border: none; cursor: pointer;border-radius: 5px;font-size: 0.6em;" product-id="<%= item.product.id %>">remove</button>
-                        </div>
-                    </td>
-                </tr>
-                <% } %>
-
-            </tbody>
-        </table>
-        
-        <div class="total-section">
-            <span class="payment-amount" style="color: #8b021b;">Total: <span id="total-price" class="payment-amount"><%= OWI.totalPrice %></span></span>
-        </div>
-        <form id="payment-form" action="#" method="post">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <h3>Name: </h3>
-                <textarea class="address-style" name="name" cols="30" rows="1"><%= user.name %></textarea>
-            </div>
-        
-            <div id="phone-container">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <h3>Phone: </h3>
-                    <textarea class="address-style" name="phone[]" cols="30" rows="1" placeholder="Enter phone number" required></textarea>
+                <div class="cart-item cd-card">
+                    <div>
+                        <h2 class="cart-item__name"><%= item.product.name %></h2>
+                        <p class="cart-item__meta"><%= item.product.current_price %> EGP &times; <span class="quantity"><%= item.quantity %></span></p>
+                    </div>
+                    <div>
+                        <p class="cart-item__line"><%= item.product.current_price * item.quantity %> EGP</p>
+                        <button type="button" class="delete" product-id="<%= item.product.id %>" aria-label="Remove <%= item.product.name %>">
+                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>Remove
+                        </button>
+                    </div>
                 </div>
-            </div>
-        
-            <div style="display: flex; justify-content: flex-start; margin-top: 1em;">
-                <button type="button" id="add-phone-btn" style="background-color: var(--red); color: white; padding: 0.5em; border: none; cursor: pointer;border-radius: 5px;">Add Phone</button>
-            </div>
-        
-            <h3>Address: </h3>*click to change*
-            <textarea class="address-style" name="address" rows="3"><%= user.address %></textarea>
-        
-            <h3>Notes: </h3>*click to change*
-            <textarea class="address-style" name="notes" rows="3"></textarea>
+                <% } %>
+            </section>
 
-            <h3>Date of receipt(تاريخ الاستلام)</h3>
-            <input type="date" name="date" required id="DOR">
-        
-            <h3 style="margin-bottom: 1em;">Select Payment Method</h3>
-            <label style="display: block;">
-                <input type="radio" name="paymentMethod" value="cash-on-delivery" checked>
-                Pay on Delivery(دفع عند الاستلام)
-            </label>
-            <!-- <br>
-            <label>
-                <input type="radio" name="paymentMethod" value="credit-card" id="checkout-btn">
-                Pay with Credit Card
-            </label> -->
-        
-            <div style="width: 100%; display: flex; justify-content: center; margin-top: 1em;">
-                <button type="submit" class="checkout-btn" id="placeorder-btn">Place Order</button>
-            </div>
-        </form>
-        
-        <!-- <button type="submit" class="checkout-btn" id="placeorder-btn">Place Order</button> -->
+            <aside class="checkout-card cd-card" aria-label="Checkout">
+                <h2>Order summary</h2>
+                <div class="checkout-total">
+                    <span>Total</span>
+                    <span><span id="total-price" class="payment-amount"><%= OWI.totalPrice %></span> EGP</span>
+                </div>
+
+                <form id="payment-form" action="#" method="post">
+                    <label class="cd-field" for="customer-name">
+                        <span>Name</span>
+                        <input type="text" id="customer-name" class="cd-input" name="name" value="<%= user.name %>">
+                    </label>
+
+                    <div id="phone-container">
+                        <div class="cd-phone-row">
+                            <label class="cd-field" for="customer-phone" style="flex:1;">
+                                <span>Phone</span>
+                                <input type="tel" id="customer-phone" class="cd-input" name="phone[]" placeholder="Enter phone number" required>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="button" id="add-phone-btn" class="cd-btn-secondary cd-btn-sm" style="margin-bottom: var(--cd-s4);">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i>Add another phone
+                    </button>
+
+                    <label class="cd-field" for="customer-address">
+                        <span>Address</span>
+                        <textarea id="customer-address" class="cd-input" name="address" rows="3"><%= user.address %></textarea>
+                        <span class="cd-hint">Tap to edit your delivery address.</span>
+                    </label>
+
+                    <label class="cd-field" for="customer-notes">
+                        <span>Notes</span>
+                        <textarea id="customer-notes" class="cd-input" name="notes" rows="3" placeholder="Anything we should know?"></textarea>
+                        <span class="cd-hint">Optional — e.g. occasion, gate code, preferred time.</span>
+                    </label>
+
+                    <label class="cd-field" for="DOR">
+                        <span>Delivery date · تاريخ الاستلام</span>
+                        <input type="date" name="date" required id="DOR" class="cd-input">
+                    </label>
+
+                    <div class="cd-field" role="group" aria-label="Payment method">
+                        <span style="display:block;margin-bottom:var(--cd-s1);font-family:var(--cd-font-head);font-weight:600;">Payment method</span>
+                        <div class="pay-methods">
+                            <label class="pay-card">
+                                <input type="radio" name="paymentMethod" value="cash-on-delivery" checked>
+                                <span>
+                                    <span class="pay-card__label">Pay on delivery · دفع عند الاستلام</span>
+                                    <span class="pay-card__hint">Cash when your order arrives.</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="cd-btn" id="placeorder-btn">
+                        <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>Place order
+                    </button>
+                </form>
+            </aside>
+        </div>
 
         <% }else{ %>
-            <h3 style="text-align: center;">You need to buy something!!</h3>
-        <% } %>
-
-    </div>
-
-    <!-- Popup Modal -->
-    <!-- <div id="payment-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-                    
-            <div id="credit-card-info" class="hidden">
-                <iframe src="https://accept.paymob.com/7d7d57e0-a56c-46d4-a2db-17c00a134ee3" frameborder="0"></iframe>
+            <div class="cd-empty cd-card">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                <h2>Your cart is empty</h2>
+                <p>Looks like you haven't picked any treats yet — the menu is full of them.</p>
+                <a href="/home#menu" class="cd-btn">Browse the menu</a>
             </div>
-        </div>
-    </div> -->
+        <% } %>
+    </main>
 
-<!-- <script src="JS/cart.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <%- include("Bases/CustomerFooter") %>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
     const phoneContainer = document.getElementById("phone-container");
     const addPhoneBtn = document.getElementById("add-phone-btn");
 
+    if (phoneContainer && addPhoneBtn) {
     addPhoneBtn.addEventListener("click", () => {
         // Create a new phone number field
         const phoneField = document.createElement("div");
-        phoneField.style.display = "flex";
-        phoneField.style.justifyContent = "space-between";
-        phoneField.style.alignItems = "flex-end";
-        phoneField.style.marginTop = "1em";
+        phoneField.className = "cd-phone-row";
 
         phoneField.innerHTML = `
-            <h3>Phone: </h3>
-            <textarea class="address-style" name="phone[]" cols="30" rows="1" placeholder="Enter additional phone number"></textarea>
-            <button type="button" class="remove-phone-btn" style="background-color: #f44336; color: white; padding: 0.5em; border: none; cursor: pointer; margin-left: 1em;border-radius: 5px;">Remove</button>
+            <label class="cd-field" style="flex:1;">
+                <span>Phone</span>
+                <input type="tel" class="cd-input" name="phone[]" placeholder="Enter additional phone number">
+            </label>
+            <button type="button" class="remove-phone-btn">Remove</button>
         `;
 
         phoneContainer.appendChild(phoneField);
@@ -137,6 +135,7 @@
             phoneField.remove();
         });
     });
+    }
 });
 
 </script>
@@ -160,6 +159,7 @@ function getNextWorkday(startDate) {
     return nextDate;
 }
 
+if (dateField) {
 // Add an event listener for when the user selects a date
 dateField.addEventListener("change", () => {
     const selectedDate = new Date(dateField.value);
@@ -182,11 +182,13 @@ dateField.addEventListener("change", () => {
         dateField.value = `${year}-${month}-${day}`;
     }
 });
+}
 
 const checkoutForm = document.querySelector("form")
 // const placeOrderBtn = document.getElementById("placeorder-btn")
 // placeOrderBtn.addEventListener("click", (e) => {checkoutForm.submit()})
 
+if (checkoutForm) {
 checkoutForm.addEventListener("submit", (e) => {
     // console.log("form submitted")
     let addQuantity = document.getElementById("add-quantity");
@@ -210,11 +212,12 @@ checkoutForm.addEventListener("submit", (e) => {
             });
 
             setTimeout(()=>{
-                window.location.href = "/home";                   
+                window.location.href = "/home";
             },1500)
         }
     })
 })
+}
 </script>
 
 <script>
@@ -233,7 +236,7 @@ checkoutForm.addEventListener("submit", (e) => {
                         "confirmButtonColor": "#c01836",
                     });
                     setTimeout(()=>{
-                        window.location.href = "/cart";                   
+                        window.location.href = "/cart";
                     },500)
 
                 }else{

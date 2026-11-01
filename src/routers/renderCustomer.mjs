@@ -30,7 +30,7 @@ customerRenderRouter.get("/cart",authorizedOnly, async (req, res) => {
         }
         const user = await getUserInfo(req.user.id)
         const workingDays = await getWorkingDays()
-        res.render('cart',{user:user,OWI:orederWitems,workingDays:JSON.stringify(workingDays)});
+        res.render('cart',{user:user,OWI:orederWitems,workingDays:JSON.stringify(workingDays),isAuth:true,username:req.user.name});
         
     }catch(err){console.log(err);res.status(400).send("err while loading you cart, trw again")}
     

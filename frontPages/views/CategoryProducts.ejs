@@ -1,113 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/home.css">
-    <link rel="stylesheet" href="/css/products.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
-
-    <title>Products</title>
-    <style>
-        .buy-custome{
-            height: 2.7em;
-            background-color:var(--white) ;
-            color: var(--dark-red);
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            padding: 0 1em;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .backArrow{
-            padding-bottom: 5%;
-            position: sticky;
-            right: 95%;
-            z-index: 999;
-            top: 11px;
-            align-self: center;
-            background-color: var(--white);
-            color: var(--dark-red);
-            border: 2px var(--dark-red) solid;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 7vw;
-            height: 4vw;
-            font-size: 3vw;
-            font-weight: 900;
-        }
-        @media (max-width: 768px) {
-        .backArrow{
-            right: 80%;
-            padding-top: 2%;
-            padding-bottom: 12%;
-            top: 11px;
-            width: 15vw;
-            height: 0vw;
-            font-size: 8vw;
-            }
-        }
-    </style>
+    <%- include("Bases/CustomerHead", {title: CWP ? CWP.name : "Menu"}) %>
+    <link rel="stylesheet" href="/css/shop-menu.css">
 </head>
 <body>
 <%- include("Bases/CustomerHeader") %>
-<button class="backArrow" onclick='window.location.href = "/home"'>&#127968;</button>
 
+<main class="menu-page">
 <% if(CWP){ %>
-    <h1 class="head-lines menu"><%= CWP.name %></h1>
-    <hr class="style-five">
+    <nav class="cd-container cd-breadcrumb" aria-label="Breadcrumb">
+        <a href="/home">Home</a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <span aria-current="page"><%= CWP.name %></span>
+    </nav>
 
-    <main>
-        <% for(let product of CWP.products) { %>
-            <% if(product.isActive && !product.deleted){ %>
-                <div class="product-card">
-                    <a href="/product-info/<%= product.id %>" class="a">
-                    <img src="/products/images/<%= product.photo %>" alt="">
-                    <div class="product-info">
-                        <h1 class="product-title"><%= product.name %></h1>
-                        <% if(product.current_price !== product.price){ %>
-                            <div class="price"><p>Price: <s style="color: var(--white);"><%= product.price %><span style="font-family: 'Courier New', Courier, monospace;">E£</span></p></div></s>
-                            <div class="price"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= product.current_price %><span style="font-family: 'Courier New', Courier, monospace;">E£</span></p></div>
-                        <% }else{ %>
-                            <div class="price"><p>Price: <%= product.current_price %><span style="font-family: 'Courier New', Courier, monospace;">E£</span></p></div>
-                        <% } %>
-                    </div>
+    <div class="cd-container">
+        <h1 class="menu-page__title"><%= CWP.name %></h1>
+
+        <% const activeProducts = CWP.products.filter(p => p.isActive && !p.deleted); %>
+        <% if(activeProducts.length === 0){ %>
+            <div class="cd-empty cd-card">
+                <i class="fa-solid fa-cookie" aria-hidden="true"></i>
+                <h2>Nothing here yet</h2>
+                <p>This category is out of treats right now — check back soon or browse the rest of the menu.</p>
+                <a href="/home#menu" class="cd-btn">Browse the menu</a>
+            </div>
+        <% }else{ %>
+        <div class="products-grid">
+            <% let cardIndex = 0; %>
+            <% for(let product of activeProducts) { %>
+                <article class="product-card cd-card cd-reveal" style="--i:<%= cardIndex % 4 + 1 %>;">
+                    <a href="/product-info/<%= product.id %>" class="product-card__link">
+                        <img src="/products/images/<%= product.photo %>" alt="<%= product.name %>" class="product-card__img" loading="lazy" width="400" height="400">
+                        <div class="product-card__body">
+                            <h2 class="product-card__title"><%= product.name %></h2>
+                            <div class="product-card__prices">
+                                <% if(product.current_price !== product.price){ %>
+                                    <s><%= product.price %> EGP</s>
+                                    <span><%= product.current_price %> EGP</span>
+                                    <span class="cd-badge-sale">Sale</span>
+                                <% }else{ %>
+                                    <span><%= product.current_price %> EGP</span>
+                                <% } %>
+                            </div>
+                        </div>
                     </a>
 
-                    <div id="counterWithBtns">
+                    <div id="counterWithBtns" class="product-card__stepper">
                         <% if(CWP.name !== "custom orders" && CWP.name !== "share boxs"){ %>
-                        <span class="minus" product-id="<%= product.id %>" product-price="<%= product.current_price %>">-</span>
-                        <span class="product-counter" id="product<%= product.id %>">0</span>
-                        <span class="plus" product-id="<%= product.id %>" product-price="<%= product.current_price %>" >+</span>
+                        <button type="button" class="minus cd-stepper__btn" product-id="<%= product.id %>" product-price="<%= product.current_price %>" aria-label="Remove one <%= product.name %>">−</button>
+                        <span class="product-counter" id="product<%= product.id %>" aria-live="polite">0</span>
+                        <button type="button" class="plus cd-stepper__btn" product-id="<%= product.id %>" product-price="<%= product.current_price %>" aria-label="Add one <%= product.name %>">+</button>
                         <% }else{ %>
-                            <a href="/product-info/<%= product.id %>" class="a"><button class="buy-custome">Order Now</button></a>
+                            <a href="/product-info/<%= product.id %>" class="cd-btn cd-btn-sm" style="width:100%;"><%= CWP.name === "share boxs" ? "Build your box" : "Order now" %></a>
                         <% } %>
                     </div>
-
-                </div>  
+                </article>
+                <% cardIndex++; %>
             <% } %>
+        </div>
         <% } %>
-    </main>
+    </div>
+<% }else{ %>
+    <div class="cd-container">
+        <div class="cd-empty cd-card" style="margin-top: var(--cd-s8);">
+            <i class="fa-solid fa-cookie" aria-hidden="true"></i>
+            <h2>Category not found</h2>
+            <p>We couldn't find this category — head back to the full menu.</p>
+            <a href="/home#menu" class="cd-btn">Browse the menu</a>
+        </div>
+    </div>
 <% } %>
-    
-    <a href="/cart" style="width: 100%;"><div class="cart-value">
-        <div class="bar-item"><span class="counter" id="count_total">0</span></div>
-    <svg class="bar-trolly bar-item" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="ast-cart-svg" x="0px" y="0px" width="15%" height="100%" viewBox="826 837.5 140 121" enable-background="new 826 837.5 140 121" xml:space="preserve">
-        <path style="fill: var(--red)!important;" d="M955.418,887.512c2.344,0,4.343,0.829,6.002,2.486c1.657,1.659,2.486,3.659,2.486,6.002c0,2.343-0.829,4.344-2.486,6.001  c-1.659,1.658-3.658,2.487-6.002,2.487h-0.994l-7.627,43.9c-0.354,2.033-1.326,3.713-2.917,5.04  c-1.593,1.326-3.405,1.989-5.438,1.989h-84.883c-2.033,0-3.846-0.663-5.438-1.989c-1.591-1.327-2.564-3.007-2.918-5.04l-7.626-43.9  h-0.995c-2.343,0-4.344-0.829-6.001-2.487c-1.658-1.657-2.487-3.658-2.487-6.001c0-2.343,0.829-4.343,2.487-6.002  c1.658-1.658,3.659-2.486,6.001-2.486H955.418z M860.256,940.563c1.149-0.089,2.111-0.585,2.885-1.491  c0.773-0.907,1.116-1.936,1.028-3.085l-2.122-27.586c-0.088-1.15-0.585-2.111-1.492-2.885c-0.906-0.774-1.934-1.117-3.083-1.028  c-1.149,0.088-2.111,0.586-2.885,1.492s-1.116,1.934-1.028,3.083l2.122,27.587c0.088,1.105,0.542,2.034,1.359,2.785  c0.818,0.752,1.78,1.128,2.885,1.128H860.256z M887.512,936.319v-27.587c0-1.149-0.42-2.144-1.26-2.984  c-0.84-0.84-1.834-1.26-2.984-1.26s-2.144,0.42-2.984,1.26c-0.84,0.841-1.26,1.835-1.26,2.984v27.587c0,1.149,0.42,2.145,1.26,2.984  c0.84,0.84,1.835,1.26,2.984,1.26s2.144-0.42,2.984-1.26C887.092,938.464,887.512,937.469,887.512,936.319z M912.977,936.319  v-27.587c0-1.149-0.42-2.144-1.26-2.984c-0.841-0.84-1.835-1.26-2.984-1.26s-2.145,0.42-2.984,1.26  c-0.84,0.841-1.26,1.835-1.26,2.984v27.587c0,1.149,0.42,2.145,1.26,2.984s1.835,1.26,2.984,1.26s2.144-0.42,2.984-1.26  C912.557,938.464,912.977,937.469,912.977,936.319z M936.319,936.65l2.122-27.587c0.088-1.149-0.254-2.177-1.027-3.083  s-1.735-1.404-2.885-1.492c-1.15-0.089-2.178,0.254-3.084,1.028c-0.906,0.773-1.404,1.734-1.492,2.885l-2.122,27.586  c-0.088,1.149,0.254,2.178,1.027,3.085c0.774,0.906,1.736,1.402,2.885,1.491h0.332c1.105,0,2.066-0.376,2.885-1.128  C935.777,938.685,936.23,937.756,936.319,936.65z M859.66,855.946l-6.167,27.322h-8.753l6.698-29.245  c0.84-3.89,2.807-7.062,5.902-9.516c3.095-2.453,6.632-3.68,10.611-3.68h11.074c0-1.149,0.42-2.144,1.26-2.984  c0.84-0.84,1.835-1.26,2.984-1.26h25.465c1.149,0,2.144,0.42,2.984,1.26c0.84,0.84,1.26,1.834,1.26,2.984h11.074  c3.979,0,7.516,1.227,10.611,3.68c3.094,2.454,5.062,5.626,5.901,9.516l6.697,29.245h-8.753l-6.168-27.322  c-0.486-1.945-1.491-3.537-3.017-4.774c-1.525-1.238-3.282-1.857-5.272-1.857h-11.074c0,1.15-0.42,2.144-1.26,2.984  c-0.841,0.84-1.835,1.26-2.984,1.26h-25.465c-1.149,0-2.144-0.42-2.984-1.26c-0.84-0.84-1.26-1.834-1.26-2.984h-11.074  c-1.99,0-3.747,0.619-5.272,1.857C861.152,852.409,860.146,854,859.66,855.946z"></path>
-    </svg>
-    <p class="price cart-price bar-item" id="bar-price"> <span id="bar-price-value">0</span>&nbsp;EGP</p></div></a>
+</main>
+
+<a href="/cart" class="cart-bar" aria-label="View cart">
+    <span class="cart-bar__count"><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i><span class="counter" id="count_total">0</span></span>
+    <span class="cart-bar__label">View cart</span>
+    <span class="cart-bar__total"><span id="bar-price-value">0</span> EGP</span>
+</a>
 
 <%- include("Bases/CustomerFooter") %>
-        
+
     <script>
         try{
             const OrderData = '<%= OWI %>'; // Safely embed Base64 string
             const order = JSON.parse(atob(OrderData)); // Decode and parse
-            
+
             const OrderItems = order.orderItems
             // console.log(OrderItems)
             let totalCost =0
@@ -129,7 +108,7 @@
         // Initialize localStorage values if not already set
         if (!localStorage.price) localStorage.price = 0;
         if (!localStorage.count) localStorage.count = 0;
-        
+
         cartBarPrice.innerText = Math.round(parseFloat(localStorage.price)* 10) / 10;
         cartBarQuantity.innerText = localStorage.count;
 
@@ -224,32 +203,5 @@ document.addEventListener("click", (e) => {
 
 <script src="/JS/products.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const logoutLink = document.getElementById("logout-link");
-
-        if (logoutLink) {
-            logoutLink.addEventListener("click", (event) => {
-                event.preventDefault(); // Prevent the default navigation
-
-                Swal.fire({
-                    title: 'really want to logout',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: 'green',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, logout!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = logoutLink.href; // Redirect if confirmed
-                    }
-                });
-            });
-        }
-    });
-</script>
 </body>
 </html>
-

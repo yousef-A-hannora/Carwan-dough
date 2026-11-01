@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--=== Coding by CodingLab | www.codinglabweb.com === -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,41 +7,44 @@
     <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
 
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <link rel="stylesheet" href="/css/content.css">
-    <title>Admin Dashboard Panel</title> 
+    <title>Content — Carwan Dough Admin</title>
 </head>
 <body>
 <%- include("Bases/adminBase") %>
             <div class="overview">
                 <div class="title">
                     <i class="uil uil-files-landscapes"></i>
-                    <span class="text">Content</span>
+                    <div>
+                        <span class="text">Content</span>
+                        <div class="page-sub">Manage categories, products and store settings</div>
+                    </div>
                 </div>
-
             </div>
             <main>
 
                 <div class="admin-dashboard">
 
                     <!-- Action Buttons -->
-                    <div class="actions">
-                      <button class="button" id="openAddProductModal">Add Product</button>
-                      <button class="button" id="openEditPasswordModal">Add category</button>
-                      <button class="button" id="openEditDayesModal">Edit Work-Dayes</button>
-                      <button class="button" id="openAdminModal">Edit admin Password</button>
+                    <div class="toolbar actions">
+                      <button class="btn btn-primary" id="openAddProductModal"><i class="uil uil-plus"></i>Add Product</button>
+                      <button class="btn btn-outline" id="openEditPasswordModal"><i class="uil uil-folder-plus"></i>Add Category</button>
+                      <div class="spacer"></div>
+                      <button class="btn btn-ghost" id="openEditDayesModal"><i class="uil uil-calendar-alt"></i>Working Days</button>
+                      <button class="btn btn-ghost" id="openAdminModal"><i class="uil uil-key-skeleton"></i>Admin Password</button>
                     </div>
-                    <hr>
 
                     <% for(let categoryWithProducts of catsWithProds){%>
-                      <div class="category">
-                          <div class="category-info">
-                            <h1 class="category-name"><%= categoryWithProducts.name %></h1> 
-                            <div class="category-info" style="margin: 0; margin-left: 10px;">
-                              <label class="toggle-switch square" >
+                      <div class="card category">
+                          <div class="card-head category-info">
+                            <h2 class="category-name"><%= categoryWithProducts.name %></h2>
+                            <span class="badge badge-neutral"><% const liveCount = categoryWithProducts.products.filter(p => !p.deleted).length; %><%= liveCount %> product<% if(liveCount !== 1){ %>s<% } %></span>
+                            <div class="category-meta">
+                              <span class="active-label"><% if(categoryWithProducts.isActive){ %>Visible<% }else{ %>Hidden<% } %></span>
+                              <label class="toggle-switch square" title="Toggle category visibility">
                                 <% if(categoryWithProducts.isActive){ %>
                                   <input type="checkbox" catId="<%= categoryWithProducts.id %>" checked class="category-toggle">
                                 <% } else { %>
@@ -50,58 +52,62 @@
                                 <% } %>
                                 <span class="slider"></span>
                               </label>
+                              <a href="/edit-category/<%= categoryWithProducts.id %>" class="btn btn-sm btn-ghost"><i class="uil uil-edit"></i>Edit</a>
                             </div>
-                            <a href="/edit-category/<%= categoryWithProducts.id %>" style="margin-right: 10px;"><button class="button">Edit category</button></a>
                           </div>
 
                           <!-- Product Table -->
-                          <table class="product-table">
-                            <thead>
-                              <tr>
-                                <th></th>
-                                <th>Product Video</th>
-                                <th>Product Image</th>
-                                <th>Product Name</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <% for(let Products of categoryWithProducts.products){%>
-                                <% if(!Products.deleted) {%>
-                              <tr>
-                                    <td style="width: 0px;">
-                                      <label class="toggle-switch square">
-                                        <% if(Products.isActive){ %>
-                                          <input type="checkbox" prodId="<%= Products.id%>" checked class="product-toggle">
-                                        <% } else { %>
-                                          <input type="checkbox" prodId="<%= Products.id%>" class="product-toggle">
-                                        <% } %>
-                                        <span class="slider"></span>
-                                      </label>
-                                    </td>
-                                    <td class="video-td">
-                                      <video autoplay muted loop>
-                                        <source src="/products/videos/<%= Products.video %>" >
-                                      </video>
-                                    </td>
-                                    <td class="img-td"><img src="/products/images/<%= Products.photo %>" alt="Product 1" class="product-img"></td>
-                                    <td><%= Products.name %></td>
-                                    <td class="product-des"><%= Products.description %></td>
-                                    <td><%= Products.price %></td>
-                                    <td style="width: 5vh;">
-                                      <a href="/edit-product/<%= Products.id%>"><button class="edit-button" id="edit-product">Edit</button></a>
-                                      <a href="#"><button class="remove-button" prod-id="<%=Products.id%>" id="removeProd">Remove</button></a>
-                                    </td>
-                              </tr>
+                          <div class="table-scroll">
+                            <table class="product-table">
+                              <thead>
+                                <tr>
+                                  <th class="col-toggle"><span title="Product visible in store">Live</span></th>
+                                  <th class="col-media">Video</th>
+                                  <th class="col-media">Image</th>
+                                  <th>Product Name</th>
+                                  <th>Description</th>
+                                  <th class="col-price">Price</th>
+                                  <th class="col-actions">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% for(let Products of categoryWithProducts.products){%>
+                                  <% if(!Products.deleted) {%>
+                                <tr>
+                                      <td>
+                                        <label class="toggle-switch square" title="Toggle product visibility">
+                                          <% if(Products.isActive){ %>
+                                            <input type="checkbox" prodId="<%= Products.id%>" checked class="product-toggle">
+                                          <% } else { %>
+                                            <input type="checkbox" prodId="<%= Products.id%>" class="product-toggle">
+                                          <% } %>
+                                          <span class="slider"></span>
+                                        </label>
+                                      </td>
+                                      <td class="video-td">
+                                        <video autoplay muted loop>
+                                          <source src="/products/videos/<%= Products.video %>" >
+                                        </video>
+                                      </td>
+                                      <td class="img-td"><img src="/products/images/<%= Products.photo %>" alt="<%= Products.name %>" class="product-img"></td>
+                                      <td class="cell-strong"><%= Products.name %></td>
+                                      <td class="product-des" title="<%= Products.description %>"><%= Products.description %></td>
+                                      <td class="cell-price"><%= Products.price %> EGP</td>
+                                      <td>
+                                        <div class="row-actions row-actions-horizontal">
+                                          <a href="/edit-product/<%= Products.id%>"><button class="edit-button" id="edit-product">Edit</button></a>
+                                          <a href="#"><button class="remove-button" prod-id="<%=Products.id%>" id="removeProd">Remove</button></a>
+                                        </div>
+                                      </td>
+                                </tr>
+                                <% } %>
                               <% } %>
-                            <% } %>
-                            </tbody>
-                          </table>
+                              </tbody>
+                            </table>
+                          </div>
                   </div>
                 <% } %>
-             
+
             </div>
                 <!-- Add Product Modal -->
                 <div id="addProductModal" class="modal">
@@ -110,7 +116,7 @@
                     <h2>Add Product</h2>
                     <form action="" method="post" enctype="multipart/form-data">
                       <input type="hidden" name="form-type" value="product">
-                      <div id="productInputFields" style="padding: 10px; display: flex; justify-content: center; flex-direction: column;">
+                      <div id="productInputFields">
                         <div class="input-group">
                           <label for="Category">Category</label>
                           <select name="Category" id="Category" onchange="toggleExtraFields()">
@@ -161,7 +167,7 @@
                     </form>
                   </div>
                 </div>
-            
+
                 <!-- Add category Modal -->
                 <div id="editPasswordModal" class="modal">
                   <div class="modal-content">
@@ -183,13 +189,13 @@
                   </div>
                 </div>
 
-                
+
                 <!-- Edit WorkDayes Modal -->
                 <div id="EditWordDayesModal" class="modal">
                   <div class="modal-content">
                     <span class="close-button" id="closeEditWordDayesModal">&times;</span>
-                    <h2>Edit Work Dayes</h2>
-                    <form action="/api/admin/content/edit-workdayes" method="post" enctype="multipart/form-data" class="formInputs">                      
+                    <h2>Working Days</h2>
+                    <form action="/api/admin/content/edit-workdayes" method="post" enctype="multipart/form-data" class="formInputs">
                     </form>
                   </div>
                 </div>
@@ -198,20 +204,20 @@
                 <div id="EditAdminModal" class="modal">
                   <div class="modal-content">
                     <span class="close-button" id="closeAdminModal">&times;</span>
-                    <h2>Edit Admin password</h2>
+                    <h2>Update Admin Password</h2>
                     <form action="#" method="post">
                       <div class="input-group">
-                        <label for="">Password</label>
-                        <div style="display: flex;gap: 5px;align-items: center;">
-                          <input type="password" name="password"  required>
-                          <i id="togglePasswordIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
+                        <label for="adminPassword">Password</label>
+                        <div class="password-wrap">
+                          <input type="password" name="password" id="adminPassword" required>
+                          <i id="togglePasswordIcon" class="fa fa-eye-slash"></i>
                         </div>
                       </div>
                       <div class="input-group">
-                        <label for="">Password again</label>
-                        <div style="display: flex;gap: 5px;align-items: center;">
-                          <input type="password" name="passwordAgian"  required>
-                          <i id="togglePasswordAgainIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
+                        <label for="adminPasswordAgain">Password again</label>
+                        <div class="password-wrap">
+                          <input type="password" name="passwordAgian" id="adminPasswordAgain" required>
+                          <i id="togglePasswordAgainIcon" class="fa fa-eye-slash"></i>
                         </div>
                       </div>
                       <button type="submit" class="submit-button">Update password</button>
@@ -274,7 +280,7 @@
   const workDaysBtn = document.createElement('button')
   workDaysBtn.className = "submit-button"
   workDaysBtn.type = "submit"
-  workDaysBtn.textContent = "Update Work Dayes"
+  workDaysBtn.textContent = "Update Working Days"
 
   workDayesForm.append(workDaysBtn)
 
@@ -290,7 +296,7 @@
       extraFields.style.display = "block";
     } else {
       extraFields.style.display = "none";
-      
+
     }
   }
 
@@ -312,7 +318,7 @@
           });
           productForm.reset()
           setTimeout(()=>{
-                    window.location.href = "/content";                   
+                    window.location.href = "/content";
           },1000)
         } else {
           return response.text().then(errMsg => {
@@ -347,7 +353,7 @@
           });
           categoryForm.reset()
           setTimeout(()=>{
-                    window.location.href = "/content";                   
+                    window.location.href = "/content";
           },1000)
         } else {
           return response.text().then(errMsg => {
@@ -479,7 +485,7 @@ document.addEventListener("change",(e)=>{
 
     const fd = new FormData
     fd.append("active",isActive)
-    const urlEncodedData = new URLSearchParams(fd).toString(); 
+    const urlEncodedData = new URLSearchParams(fd).toString();
     // Send the request to the endpoint
     fetch(`/api/admin/content/changeProductState/${prodId}`, {
       method: "PATCH",
@@ -498,7 +504,7 @@ document.addEventListener("change",(e)=>{
 
     const fd = new FormData
     fd.append("active",isActive)
-    const urlEncodedData = new URLSearchParams(fd).toString(); 
+    const urlEncodedData = new URLSearchParams(fd).toString();
         // Send the request to the endpoint
     fetch(`/api/admin/content/changeCategoryState/${catId}`, {
       body: urlEncodedData,
@@ -527,7 +533,7 @@ document.addEventListener("change",(e)=>{
   document.getElementById("closeAddProductModal").onclick = function() {
     document.getElementById("addProductModal").style.display = "none";
   };
-  
+
 
   // Open Edit Password Modal when button is clicked
   document.getElementById("openEditPasswordModal").onclick = function() {
@@ -537,7 +543,7 @@ document.addEventListener("change",(e)=>{
   document.getElementById("closeEditPasswordModal").onclick = function() {
     document.getElementById("editPasswordModal").style.display = "none";
   };
-  
+
 
   // Open Edit Word Dayes Modal when button is clicked
     document.getElementById("openEditDayesModal").onclick = function() {
@@ -572,7 +578,7 @@ document.addEventListener("change",(e)=>{
       document.getElementById("EditAdminModal").style.display = "none";
     }
   };
-  
+
   </script>
 
   <!-- for updating password -->

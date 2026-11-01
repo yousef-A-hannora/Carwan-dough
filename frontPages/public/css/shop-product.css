@@ -1,0 +1,266 @@
+/* Carwan Dough — product-info page (incl. share-box & custom-order forms) */
+
+.product-layout {
+    display: grid;
+    gap: var(--cd-s8);
+    padding-bottom: var(--cd-s16);
+}
+@media (min-width: 900px) {
+    .product-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+}
+
+.media-card {
+    overflow: hidden;
+    padding: var(--cd-s3);
+}
+.media-card img,
+.media-card video {
+    width: 100%;
+    height: auto; /* height attribute must not pin the box */
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: var(--cd-s4);
+    border-radius: var(--cd-r-sm);
+    background: var(--cd-cream-2);
+}
+
+.info-container .product-title {
+    font-family: var(--cd-font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--cd-red);
+    margin: var(--cd-s3) 0 var(--cd-s3);
+}
+.info-container .description {
+    color: var(--cd-ink-muted);
+    margin: 0 0 var(--cd-s4);
+}
+
+/* price block */
+.price-block {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--cd-s3);
+    margin-bottom: var(--cd-s4);
+}
+.price-block__label { color: var(--cd-ink-muted); font-weight: 600; }
+.price-block__current,
+.price #product-price,
+.price-block #product-price {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--cd-red);
+}
+.price-block s { color: var(--cd-ink-muted); font-weight: 600; }
+
+/* "in your cart" pill */
+.cart-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cd-s2);
+    padding: var(--cd-s1) var(--cd-s4);
+    border-radius: var(--cd-r-pill);
+    background: var(--cd-red-50);
+    color: var(--cd-red);
+    font-family: var(--cd-font-head);
+    font-weight: 600;
+    margin-bottom: var(--cd-s6);
+}
+.cart-pill #quantity { font-weight: 700; }
+
+/* add-to-cart form */
+.styled-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--cd-s3);
+}
+.qty-field {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cd-s2);
+}
+.qty-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--cd-red);
+    border-radius: var(--cd-r-pill);
+    background: #fff;
+    color: var(--cd-red);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background-color .15s ease-out, color .15s ease-out, transform .15s ease-out;
+}
+.qty-step:hover { background: var(--cd-red); color: #fff; }
+.qty-step:active { transform: scale(.94); }
+.qty-field input[type="number"] {
+    width: 72px;
+    height: 44px;
+    text-align: center;
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-sm);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--cd-ink);
+}
+.qty-field input[type="number"]:focus {
+    outline: none;
+    border-color: var(--cd-red);
+    box-shadow: 0 0 0 3px var(--cd-red-50);
+}
+
+/* ---------- share box / custom order forms ---------- */
+.sharebox-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cd-s3);
+    width: 100%;
+}
+.donut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cd-s3);
+    padding: var(--cd-s3) var(--cd-s4);
+    border: 1px solid var(--cd-border);
+    border-radius: var(--cd-r-sm);
+    background: var(--cd-card);
+    transition: border-color .15s ease-out, box-shadow .15s ease-out;
+}
+.donut-item:hover { border-color: var(--cd-pink); box-shadow: var(--cd-shadow-card); }
+.donut-item .product-title {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--cd-ink);
+    margin: 0;
+}
+.donut-item #counterWithBtns {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cd-s2);
+    flex-shrink: 0;
+}
+.quantity-buttons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--cd-red);
+    border-radius: var(--cd-r-pill);
+    background: #fff;
+    color: var(--cd-red);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: background-color .15s ease-out, color .15s ease-out, transform .15s ease-out;
+}
+.quantity-buttons:hover { background: var(--cd-red); color: #fff; }
+.quantity-buttons:active { transform: scale(.94); }
+.quantity-buttons:disabled {
+    border-color: var(--cd-border);
+    color: #cbb0a6;
+    background: var(--cd-cream);
+    cursor: not-allowed;
+}
+.donut-item input[type="number"] {
+    width: 56px;
+    height: 44px;
+    text-align: center;
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-sm);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--cd-ink);
+}
+.donut-item input[type="number"]:focus {
+    outline: none;
+    border-color: var(--cd-red);
+    box-shadow: 0 0 0 3px var(--cd-red-50);
+}
+
+/* helper callout — #note */
+#note {
+    display: block;
+    margin: 0 0 var(--cd-s4);
+    padding: var(--cd-s3) var(--cd-s4);
+    border-left: 4px solid var(--cd-yellow);
+    border-radius: var(--cd-r-sm);
+    background: #fff8e0;
+    color: var(--cd-ink-muted);
+    font-size: .9rem;
+}
+textarea#note {
+    display: block;
+    width: 100%;
+    border-left: none;
+    border: 2px solid var(--cd-border);
+    background: #fff;
+    color: var(--cd-ink);
+    font-family: var(--cd-font-body);
+    font-size: 1rem;
+    padding: var(--cd-s3);
+}
+textarea#note:focus {
+    outline: none;
+    border-color: var(--cd-red);
+    box-shadow: 0 0 0 3px var(--cd-red-50);
+}
+
+.sharebox-form .submit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    margin-top: var(--cd-s2);
+    border: none;
+    border-radius: var(--cd-r-pill);
+    background: var(--cd-red);
+    color: #fff;
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--cd-red-deep);
+    transition: background-color .18s ease-out, transform .18s ease-out, box-shadow .18s ease-out;
+}
+.sharebox-form .submit-button:hover { background: var(--cd-red-dark); transform: translateY(-1px); }
+.sharebox-form .submit-button:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--cd-red-deep); }
+
+/* custom order textarea label */
+.sharebox-form h3 {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--cd-ink);
+    margin: 0;
+    align-self: flex-start;
+}
+.address-style {
+    width: 100%;
+    padding: var(--cd-s3);
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-sm);
+    background: #fff;
+    color: var(--cd-ink);
+    font-family: var(--cd-font-body);
+    font-size: 1rem;
+    resize: vertical;
+}
+.address-style:focus {
+    outline: none;
+    border-color: var(--cd-red);
+    box-shadow: 0 0 0 3px var(--cd-red-50);
+}

@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
-
-    <title>Forget pass</title>
+    <%- include("Bases/CustomerHead", {title: "Reset password"}) %>
+    <link rel="stylesheet" href="/css/shop-auth.css">
 </head>
-<body>
-    <div class="logo-container">
-        <a href="/home"><img src="imgs/logo.PNG" class="logo"></a>
-    </div>
-    <div class="login-container">
-        <h2>Reset password</h2>
+<body class="auth-body">
+    <span class="cd-sprinkle cd-sprinkle--a" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--b" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--c" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--d" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--e" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--f" aria-hidden="true"></span>
+
+    <main class="auth-card cd-card">
+        <a href="/home" class="auth-card__logo" aria-label="Carwan Dough — home"><img src="/imgs/logo.PNG" alt="Carwan Dough" width="180" height="72"></a>
+        <h1>Reset password</h1>
+        <p class="auth-sub">Enter your phone number and we'll send a code to your WhatsApp.</p>
         <form action="/login" method="post">
-            <input type="number" placeholder="Write your phone" name="phone" required>
-            <button type="submit">OK</button>
+            <label class="cd-field" for="reset-phone">
+                <span>Phone</span>
+                <input type="number" id="reset-phone" placeholder="Write your phone" name="phone" required>
+            </label>
+            <button type="submit" class="cd-btn auth-submit">Send code</button>
         </form>
-    </div>
+        <div class="auth-links">
+            <a href="/login">Back to log in</a>
+        </div>
+    </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

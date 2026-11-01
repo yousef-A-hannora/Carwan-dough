@@ -27,27 +27,23 @@ authRouter.post("/register",userSignUpValidation,async (req,res)=>{
     }})
     if(userCheck) return res.status(400).send({msg:"phone number is already taken"})
 
-    req.session.data = data
-    console.log(req.session.data)
-    const sendOTP = async ()=>{
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        req.session.otp = otp;
-        await sendWA(data.phone,otp);
-        req.session.lastOTP = Date.now()
-        return res.sendStatus(200);
-    }
-    if(!req.session.lastOTP){
-        await sendOTP()
-    }else{
-        let lastOTP = req.session.lastOTP
-        let now = Date.now()
-        let expectedTime = new Date(lastOTP).getTime() + 3 * 60 * 1000;
-        if(now >= expectedTime){
-            await sendOTP()
-        }else{
-            return res.status(400).send({msg:"You should wait 3 minutes before requesting a new code"})
+    const newUser = await prisma.user.create({
+        data: {
+            name: data.username,
+            phone: data.phone,
+            password: passHashing(data.password)
         }
-    }
+    });
+    req.login(newUser, async (err) => {
+        if (err) {
+            console.error("Login error:", err);
+            return res.status(500).send("Internal server error");
+        }
+        if (req.session.orderId) {
+            await updateOrderOwner(req.session.orderId, newUser.id);
+        }
+        return res.sendStatus(200);
+    });
 
     }catch(err){console.log(err);res.status(400).send("something went wronge")}
 })

@@ -1,73 +1,17 @@
-<style>
-    .sharebox-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 90%;
-        margin: auto;
-    }
-    .address-style{
-        padding: 5px;
-        direction:rtl;font-size: 1.5vw;
-        width: 100%;
-        background-color: var(--white);
-        border-color:var(--dark-red) ;
-        font-size: 2vw;
-        color: #5c0112;
-        margin-bottom: 10px;
-    }
-    h3{
-        font-size:2vw;
-        color:#8b021b;
-        margin-bottom: 0;
-        align-self: flex-start;
-    }
-    .submit-button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        font-size: 1.2em;
-        color: white;
-        background-color: var(--red);
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-
-    }
-    #note{
-    font-size: 1.5vw;
-    margin: 10px;
-    }
-@media(max-width:700px){
-    .address-style{
-        direction:rtl;font-size: 4vw;
-    }
-    .sharebox-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin: auto;
-    }
-    #note{
-    font-size: 3.5vw;
-    }
-    h3{
-        font-size:6vw;
-    }
-}
-</style>
-
 <div class="info-container">
+<a href="/CategoryProducts/<%= product.categoryId %>" class="cd-chip"><i class="fa-solid fa-tag" aria-hidden="true"></i><%= product.category.name %></a>
+<h1 class="product-title"><%= product.name %></h1>
 <p class="description"><%= product.description %></p>
-<div class="price">Price start from: <span id="product-price"><%= product.price %> egp</span></div>
+<div class="price-block">
+    <span class="price-block__label">Price start from</span>
+    <span class="price-block__current"><span id="product-price"><%= product.price %> EGP</span></span>
+</div>
 
 
 <form action="" method="post" class="sharebox-form">
-    <!-- Submit Button -->
-    <h3>Notes: </h3>
-    <textarea class="address-style" name="notes" id="note" rows="3"></textarea>
-    <button type="submit" class="submit-button">Order Now</button>
+    <h3>Describe your order: </h3>
+    <textarea class="address-style" name="notes" id="note" rows="4" placeholder="Tell us what you're dreaming of — flavours, colours, occasion..."></textarea>
+    <button type="submit" class="submit-button"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>&nbsp;Order Now</button>
 </form>
 </div>
 
@@ -86,7 +30,7 @@ form.addEventListener("submit", async (e) => {
 
 
     // Show a message if no donuts are selected
-    
+
     if (!formData) {
         Swal.fire({
                 icon: "error",
@@ -105,7 +49,7 @@ form.addEventListener("submit", async (e) => {
             },
             body: JSON.stringify({"prodId":'<%= product.id %>',"details":{"details":formData}}),
         });
-        
+
         const usrEncodedMessage = encodeURIComponent(formData);
         if (response.ok) {
             Swal.fire({
@@ -114,10 +58,10 @@ form.addEventListener("submit", async (e) => {
                 "confirmButtonColor": "#c01836",
             });
             setTimeout(()=>{
-                window.location.href = `https://wa.me/+201556364646?text=النوع(${'<%= product.name %>'}):${usrEncodedMessage}`;                   
+                window.location.href = `https://wa.me/+201556364646?text=النوع(${'<%= product.name %>'}):${usrEncodedMessage}`;
             },1000)
             setTimeout(()=>{
-                window.location.href = `/CategoryProducts/<%= product.categoryId %>`;                   
+                window.location.href = `/CategoryProducts/<%= product.categoryId %>`;
             },1500)
         } else {
             note.textContent = "Failed to submit your order. Please try again.";

@@ -1,0 +1,142 @@
+/* Carwan Dough — category products (menu) page */
+
+.menu-page { padding-bottom: 120px; /* room for the floating cart bar */ }
+
+.menu-page__title {
+    font-family: var(--cd-font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--cd-red);
+    margin: 0 0 var(--cd-s6);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--cd-s4);
+}
+@media (min-width: 576px)  { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 768px)  { .products-grid { grid-template-columns: repeat(3, 1fr); gap: var(--cd-s6); } }
+@media (min-width: 1200px) { .products-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform .2s ease-out, box-shadow .2s ease-out;
+}
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 2px 0 rgba(59, 10, 22, .06), 0 22px 40px -18px rgba(192, 24, 54, .4);
+}
+.product-card__link { text-decoration: none; color: inherit; }
+.product-card__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: var(--cd-s4);
+    background: var(--cd-cream-2);
+}
+.product-card__body { padding: var(--cd-s3) var(--cd-s4) var(--cd-s2); }
+.product-card__title {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0 0 var(--cd-s1);
+    color: var(--cd-ink);
+}
+.product-card__prices {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--cd-s2);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    color: var(--cd-red);
+}
+.product-card__prices s {
+    color: var(--cd-ink-muted);
+    font-weight: 600;
+    font-size: .85rem;
+}
+.product-card__stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cd-s6);
+    padding: var(--cd-s2) var(--cd-s4) var(--cd-s4);
+}
+.product-card__stepper .cd-stepper__btn { width: 40px; height: 40px; }
+@media (min-width: 768px) {
+    .product-card__stepper .cd-stepper__btn { width: 44px; height: 44px; }
+}
+.product-counter {
+    min-width: 2ch;
+    text-align: center;
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ---------- empty state ---------- */
+.cd-empty {
+    text-align: center;
+    padding: var(--cd-s16) var(--cd-s4);
+    color: var(--cd-ink-muted);
+}
+.cd-empty i {
+    font-size: 3rem;
+    color: var(--cd-pink);
+    margin-bottom: var(--cd-s4);
+}
+.cd-empty h2 { color: var(--cd-ink); }
+.cd-empty p { margin: 0 auto var(--cd-s6); max-width: 40ch; }
+
+/* ---------- floating cart bar ---------- */
+.cart-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    gap: var(--cd-s4);
+    width: min(560px, calc(100% - 32px));
+    min-height: 56px;
+    padding: var(--cd-s2) var(--cd-s4);
+    border-radius: var(--cd-r-pill);
+    background: var(--cd-red);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 5px 0 var(--cd-red-deep), 0 18px 36px -12px rgba(122, 14, 37, .55);
+    transition: transform .18s ease-out, background-color .18s ease-out;
+}
+.cart-bar:hover { background: var(--cd-red-dark); transform: translateX(-50%) translateY(-2px); }
+.cart-bar__count {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cd-s2);
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+}
+.cart-bar__count .counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 var(--cd-s1);
+    border-radius: var(--cd-r-pill);
+    background: #fff;
+    color: var(--cd-red);
+    font-size: .85rem;
+}
+.cart-bar__label {
+    flex: 1;
+    text-align: center;
+    font-family: var(--cd-font-head);
+    font-weight: 600;
+}
+.cart-bar__total { font-family: var(--cd-font-head); font-weight: 700; white-space: nowrap; }

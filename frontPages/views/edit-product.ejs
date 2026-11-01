@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--=== Coding by CodingLab | www.codinglabweb.com === -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,73 +7,86 @@
     <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
 
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="/css/style.css">
-     
+    <link rel="stylesheet" href="/css/admin.css">
+
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <link rel="stylesheet" href="/css/content.css">
-    <title>Admin Dashboard Panel</title> 
+    <title>Edit Product — Carwan Dough Admin</title>
 </head>
 <body>
 <%- include("Bases/adminBase") %>
 
             <div class="overview">
                 <div class="title">
-                    <i class="uil uil-files-landscapes"></i>
-                    <span class="text">Content</span>
+                    <i class="uil uil-edit"></i>
+                    <div>
+                        <span class="text">Edit Product</span>
+                        <div class="page-sub">Update details for <%= product.name %></div>
+                    </div>
                 </div>
-
             </div>
-            <main class="edit">
-                <h2 style="align-self: flex-start;">Edit Product</h2>
-                <a href="/content" style="align-self: flex-end;"><span class="close-button" id="closeEditPasswordModal" style="font-size: 3em;">&times;</span></a>
-                <form action="/api/admin/content/edit-product" method="post" enctype="multipart/form-data" style="width: 80%;">
-                    <input type="hidden" name="product_id" value="<%= product.id %>">
-                    <div class="input-group">
-                        <label for="Category">Category</label>
-                        <select name="Category" id="Category">
-                          <% for(let category of cats){ %>
-                            <% if(category.id == product.categoryId){ %>
-                                <option value="<%= category.id %>" selected><%= category.name %></option>
-                            <% }else{ %>
-                                <option value="<%= category.id %>"><%= category.name %></option>
-                            <% } %>
-                          <% } %>
-                        </select>
-                      </div>
-                    <div class="input-group">
-                      <label for="product-name">Product Name</label>
-                      <input type="text" id="product-name" name="product_name" required value="<%= product.name %>">
+            <main>
+                <div class="card form-card">
+                    <div class="card-head">
+                        <span class="card-title"><i class="uil uil-edit"></i>Product Details</span>
+                        <a href="/content" class="btn btn-sm btn-ghost"><i class="uil uil-arrow-left"></i>Back to Content</a>
                     </div>
-                    <div class="input-group">
-                      <label for="product-description">Product Description</label>
-                      <textarea id="product-description" name="product_description" ><%= product.description %></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label for="product-price">Product Price</label>
-                        <input type="number" id="product-price" name="product_price" value="<%= product.price %>" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="product-image">Current Image</label>
-                        <img src="/products/images/<%= product.photo %>" alt="Product Image" style="max-width: 200px;">
-                    </div>
-                    <div class="input-group">
-                      <label for="product-image">New Image</label>
-                      <input type="file" id="product-image" name="product_image" value="">
-                    </div>
-                    <div class="input-group">
-                        <label for="product-image">Current Video</label>
-                        <video autoplay muted class="edit-video">
-                            <source src="/products/videos/<%= product.video %>" >
-                        </video>                    
-                    </div>
-                    <div class="input-group">
-                        <label for="product-image">New Video</label>
-                        <input type="file" id="product-image" name="product_video" value="">
-                    </div>
+                    <div class="card-body">
+                        <form action="/api/admin/content/edit-product" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="product_id" value="<%= product.id %>">
+                            <div class="input-group">
+                                <label for="Category">Category</label>
+                                <select name="Category" id="Category">
+                                  <% for(let category of cats){ %>
+                                    <% if(category.id == product.categoryId){ %>
+                                        <option value="<%= category.id %>" selected><%= category.name %></option>
+                                    <% }else{ %>
+                                        <option value="<%= category.id %>"><%= category.name %></option>
+                                    <% } %>
+                                  <% } %>
+                                </select>
+                              </div>
+                            <div class="input-group">
+                              <label for="product-name">Product Name</label>
+                              <input type="text" id="product-name" name="product_name" required value="<%= product.name %>">
+                            </div>
+                            <div class="input-group">
+                              <label for="product-description">Product Description</label>
+                              <textarea id="product-description" name="product_description" ><%= product.description %></textarea>
+                            </div>
+                            <div class="input-group">
+                                <label for="product-price">Product Price</label>
+                                <input type="number" id="product-price" name="product_price" value="<%= product.price %>" required>
+                            </div>
 
-                    <button type="submit" class="submit-button">Edit Product</button>
-                  </form>
+                            <div class="input-group">
+                                <label>Current Media</label>
+                                <div class="form-media-preview">
+                                    <div class="media-box">
+                                        <img src="/products/images/<%= product.photo %>" alt="<%= product.name %>">
+                                        <span class="cell-muted">Image</span>
+                                    </div>
+                                    <div class="media-box">
+                                        <video autoplay muted loop class="edit-video">
+                                            <source src="/products/videos/<%= product.video %>" >
+                                        </video>
+                                        <span class="cell-muted">Video</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                              <label for="product-image">New Image</label>
+                              <input type="file" id="product-image" name="product_image" value="">
+                            </div>
+                            <div class="input-group">
+                                <label for="product-video">New Video</label>
+                                <input type="file" id="product-video" name="product_video" value="">
+                            </div>
+
+                            <button type="submit" class="submit-button">Save Changes</button>
+                          </form>
+                    </div>
+                </div>
             </main>
 <%- include("Bases/adminBaseCloser") %>
 
@@ -97,7 +109,7 @@
                     "confirmButtonColor": "#c01836",
                 });
                 setTimeout(()=>{
-                    window.location.href = "/content";                   
+                    window.location.href = "/content";
                 },1000)
             } else {
                 return response.text().then(errMsg => {

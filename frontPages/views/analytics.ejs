@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--=== Coding by CodingLab | www.codinglabweb.com === -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,101 +7,117 @@
     <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
 
     <!----======== CSS ======== -->
-    <link rel="stylesheet" href="css/style.css">
-     
+    <link rel="stylesheet" href="/css/admin.css">
+
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/analytics.css">
-    <link rel="stylesheet" href="css/orders.css">
-    <title>Admin Dashboard Panel</title> 
+    <title>Statistics — Carwan Dough Admin</title>
 </head>
 <body>
 <%- include("Bases/adminBase") %>
             <div class="overview">
                 <div class="title">
                     <i class="uil uil-chart"></i>
-                    <span class="text">Statistics</span>
+                    <div>
+                        <span class="text">Statistics</span>
+                        <div class="page-sub">Store performance and customer insights</div>
+                    </div>
                 </div>
             </div>
 
             <main>
 
                 <form method="GET" action="" class="date-range-form">
-                    <div>
-                        <label>From</label>
+                    <div class="field">
+                        <label for="from">From</label>
                         <input type="date" name="from" id="from">
                     </div>
-                    <div>
-                        <label>To</label>
+                    <div class="field">
+                        <label for="to">To</label>
                         <input type="date" name="to" id="to">
                     </div>
-                    <button class="open-modal-btn">Find</button>
+                    <button class="btn btn-primary">Apply</button>
                 </form>
 
-                <div class="statistisc-boxes">
-                    <div class="total-boxes">
-                        <div class="total orders">
-                            <i class="uil uil-truck"></i>
-                            <span class="text">Total Orders: <%= done+canceled %></span>
-                            <span class="number">Done: <%= done %></span>
-                            <span class="number">canceled: <%= canceled %></span>
-                        </div>
-
-                        <div class="total earnings">
-                            <i class="uil uil-usd-circle"></i>
-                            <span class="text">Total earnings</span>
-                            <span class="number"><%= earning %></span>
-                        </div>
-
-                        <div class="total customers">
-                            <i class="fa-regular fa-user"></i>
-                            <span class="text"> Customers</span>
-                            <span class="number"><%= users.length %></span>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon icon-brand"><i class="uil uil-truck"></i></span>
+                        <div class="stat-body">
+                            <span class="stat-label">Total Orders</span>
+                            <span class="stat-value"><%= done+canceled %></span>
+                            <span class="stat-sub"><span class="up"><%= done %> done</span> &middot; <span class="down"><%= canceled %> canceled</span></span>
                         </div>
                     </div>
-                    <div class="users-statistics">
-                            <h1>Users Info<br></h1>
-                        <table class="order-table">
+
+                    <div class="stat-card">
+                        <span class="stat-icon icon-success"><i class="uil uil-usd-circle"></i></span>
+                        <div class="stat-body">
+                            <span class="stat-label">Total Earnings</span>
+                            <span class="stat-value"><%= earning %></span>
+                            <span class="stat-sub">EGP</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-icon icon-info"><i class="uil uil-users-alt"></i></span>
+                        <div class="stat-body">
+                            <span class="stat-label">Customers</span>
+                            <span class="stat-value"><%= users.length %></span>
+                            <span class="stat-sub">in selected period</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <span class="card-title"><i class="uil uil-users-alt"></i>Customers</span>
+                        <span class="badge badge-neutral">Flagged rows highlighted in red</span>
+                    </div>
+                    <div class="table-scroll" style="max-height: 420px; overflow-y: auto;">
+                        <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Address</th>
-                                    <th>completed Orders</th>
+                                    <th>Completed Orders</th>
                                     <th>Total Pay</th>
-                                    <th>canceled orders</th>
+                                    <th>Canceled Orders</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Row -->
                                 <% if(Array.isArray(users)){ %>
                                 <% for(let user of users){ %>
                                 <tr class="<% if(user.redFlags > 0){ %> red-flag <% } %>">
-                                    <td><%= user.name %></td>
-                                    <td><%= user.phone %></td>
-                                    <td class="address"><%= user.address %></td>
+                                    <td class="cell-strong"><%= user.name %></td>
+                                    <td class="cell-muted"><%= user.phone %></td>
+                                    <td class="cell-muted"><%= user.address %></td>
                                     <td><%= user.done %></td>
-                                    <td><%= user.total %></td>
+                                    <td class="cell-price"><%= user.total %></td>
                                     <td><%= user.canceled %></td>
-                                    <td style="width: 0px;" ><button userId="<%= user.id %>" class="open-modal-btn unflage">Unflage</button></td>
+                                    <td><button userId="<%= user.id %>" class="btn btn-sm btn-outline unflage">Unflag</button></td>
                                 </tr>
                                 <% } %>
                                 <% } %>
-                                </tbody>
-                                </table>
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <div class="products-statistics chart-container">
-                        <h1>Products Info</h1>
-                        <canvas id="donutSalesChart"></canvas>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <span class="card-title"><i class="uil uil-chart-bar"></i>Products Sold</span>
                     </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="donutSalesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </main>
 <%- include("Bases/adminBaseCloser") %>
-    <script src="https://kit.fontawesome.com/06ef2464e4.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
 document.addEventListener("click", (e) => {
     if (e.target.classList.contains("unflage")) {
@@ -141,11 +156,11 @@ document.addEventListener("click", (e) => {
         const Products = '<%= products %>'; // Safely embed Base64 string
         const donutSalesData = JSON.parse(atob(Products)); // Decode and parse
 
-        
+
         // console.log(donutSalesData["chocolate"])
-        const donutTypes = Object.keys(donutSalesData) //['Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry','Glazed', 'Chocolate', 'Sprinkles', 'Vanilla', 'Strawberry'];
-        const donutsSold = Object.values(donutSalesData) //[120, 90, 80, 50, 70,12, 90, 80, 50, 70,120, 90, 80, 50, 70,12, 90, 80, 50, 70]; // Replace with dynamic data if needed
-    
+        const donutTypes = Object.keys(donutSalesData)
+        const donutsSold = Object.values(donutSalesData)
+
         const ctx = document.getElementById('donutSalesChart').getContext('2d');
         const donutSalesChart = new Chart(ctx, {
     type: 'bar',
@@ -200,7 +215,6 @@ document.addEventListener("click", (e) => {
         }
     }
     },
-//   plugins: [ChartDataLabels] // Load ChartDataLabels plugin
 });
 </script>
 </body>

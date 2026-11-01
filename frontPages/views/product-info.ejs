@@ -1,58 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/product-info.css">
-    <link rel="stylesheet" href="/css/home.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- <link rel="stylesheet" href="/css/products.css"> -->
-    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
-
-    <title>Product Info</title>
-<style>
-    .backArrow{
-        padding-bottom: 5%;
-        position: sticky;
-        right: 83%;
-        z-index: 999;
-        top: 11px;
-        align-self: center;
-        background-color: var(--white);
-        color: var(--dark-red);
-        border: 2px var(--dark-red) solid;
-        border-radius: 10px;
-        cursor: pointer;
-        width: 7vw;
-        height: 4vw;
-        font-size: 3vw;
-        font-weight: 900;
-    }
-    @media (max-width: 768px) {
-    .backArrow{
-        padding-bottom: 13%;
-        top: 11px;
-        width: 15vw;
-        height: 0vw;
-        font-size: 8vw;
-        }
-    }
-</style>
+    <%- include("Bases/CustomerHead", {title: product.name}) %>
+    <link rel="stylesheet" href="/css/shop-product.css">
 </head>
 <body>
 <%- include("Bases/CustomerHeader") %>
-    <button class="backArrow" onclick='window.location.href = "/CategoryProducts/<%= product.categoryId %>"'>←</button>
-    <h1 style="text-align: center;"><%= product.name %> </h1>
-    <hr>
-    <div class="container">
-        <div class="media-container">
+
+    <nav class="cd-container cd-breadcrumb" aria-label="Breadcrumb">
+        <a href="/home">Home</a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <a href="/CategoryProducts/<%= product.categoryId %>"><%= product.category.name %></a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <span aria-current="page"><%= product.name %></span>
+    </nav>
+
+    <main class="cd-container product-layout">
+        <div class="media-card cd-card">
         <% if(product.video){ %>
-                <video autoplay muted loop controls>
+                <video autoplay muted loop controls playsinline>
                     <source src="/products/videos/<%= product.video %>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             <% }else{ %>
-                    <img src="/products/images/<%= product.photo %>" alt="Product Image">
+                    <img src="/products/images/<%= product.photo %>" alt="<%= product.name %>" width="600" height="600">
             <% } %>
         </div>
         <% if(product.category.name==="share boxs"){ %>
@@ -62,43 +33,61 @@
         <% }else{ %>
 
             <div class="info-container">
+                <a href="/CategoryProducts/<%= product.categoryId %>" class="cd-chip"><i class="fa-solid fa-tag" aria-hidden="true"></i><%= product.category.name %></a>
+                <h1 class="product-title"><%= product.name %></h1>
                 <p class="description"><%= product.description %></p>
-                <% if(product.current_price !== product.price){ %>
-                    <div class="price">Price:<span id="product-price"> <s><%= product.price %> egp</s></span></div>
-                    <div class="price"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="product-price"><%= product.current_price %> egp</span></div>
-                <% }else{ %>
-                    <div class="price">Price: <span id="product-price"><%= product.price %> egp</span></div>
-                <% } %>
 
-                <div class="cart-controls">
-                    <div class="cart-controls">
-                        <p class="cart-quantity">You have </p>
-                        <span class="cart-quantity" id="quantity">1</span>
-                        <p class="cart-quantity">in Cart </p>
-                    </div>
+                <div class="price-block">
+                    <span class="price-block__label">Price</span>
+                    <% if(product.current_price !== product.price){ %>
+                        <s><span id="product-price"><%= product.price %> EGP</span></s>
+                        <span id="product-price" class="price-block__current"><%= product.current_price %> EGP</span>
+                        <span class="cd-badge-sale">Sale</span>
+                    <% }else{ %>
+                        <span id="product-price" class="price-block__current"><%= product.price %> EGP</span>
+                    <% } %>
                 </div>
 
-                <form action="" class="styled-form" style="margin-top: 20px;">
-                    <input type="number" name="quantity" placeholder="0" id="add-quantity" min="0">
-                    <button>Add to cart</button>
+                <div class="cart-controls">
+                    <span class="cart-pill"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>In your cart: <span class="cart-quantity" id="quantity">1</span></span>
+                </div>
+
+                <form action="" class="styled-form">
+                    <div class="qty-field">
+                        <button type="button" class="qty-step" data-step="-1" aria-label="Decrease quantity">−</button>
+                        <input type="number" name="quantity" placeholder="0" id="add-quantity" min="0" value="1">
+                        <button type="button" class="qty-step" data-step="1" aria-label="Increase quantity">+</button>
+                    </div>
+                    <button type="submit" class="cd-btn"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i>Add to cart</button>
                 </form>
             </div>
         <% } %>
-</div>
+    </main>
 
 <%- include("Bases/CustomerFooter") %>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    
+    document.querySelectorAll(".qty-step").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const input = document.getElementById("add-quantity");
+            if (!input) return;
+            const step = parseInt(btn.getAttribute("data-step"));
+            const next = (parseInt(input.value) || 0) + step;
+            input.value = Math.max(parseInt(input.min) || 0, next);
+        });
+    });
+</script>
+<script>
+
     let quantity = document.getElementById("quantity");
+    const addQuantityForm = document.querySelector("form");
+
+    if(quantity && addQuantityForm && addQuantityForm.classList.contains("styled-form")){
 
     if(!localStorage[`product<%= product.id %>`]){localStorage[`product<%= product.id %>`] = 0}
 
     quantity.innerText = localStorage[`product<%= product.id %>`]
 
-
-    const addQuantityForm = document.querySelector("form");
     addQuantityForm.addEventListener("submit", (e) => {
         let addQuantity = document.getElementById("add-quantity");
 
@@ -130,38 +119,13 @@
                 addQuantityForm.reset()
 
                 setTimeout(()=>{
-                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";                   
+                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";
                 },1000)
             }
         })
     })
+    }
 </script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const logoutLink = document.getElementById("logout-link");
-
-        if (logoutLink) {
-            logoutLink.addEventListener("click", (event) => {
-                event.preventDefault(); // Prevent the default navigation
-
-                Swal.fire({
-                    title: 'really want to logout',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: 'green',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, logout!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = logoutLink.href; // Redirect if confirmed
-                    }
-                });
-            });
-        }
-    });
-</script>
-
 
 </body>
 </html>

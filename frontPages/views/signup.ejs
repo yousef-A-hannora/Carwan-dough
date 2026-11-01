@@ -1,38 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/login.css">
-    <link rel="shortcut icon" href="/imgs/mini-logo.png" type="image/x-icon">
-
-    <title>Signup</title>
+    <%- include("Bases/CustomerHead", {title: "Sign up"}) %>
+    <link rel="stylesheet" href="/css/shop-auth.css">
 </head>
-<body>
-    <div class="logo-container">
-        <a href="/home"><img src="/imgs/logo.PNG" class="logo"></a>
-    </div>
-    <div class="login-container">
-        <h2>Signup</h2>
+<body class="auth-body">
+    <span class="cd-sprinkle cd-sprinkle--a" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--b" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--c" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--d" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--e" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--f" aria-hidden="true"></span>
+
+    <main class="auth-card cd-card">
+        <a href="/home" class="auth-card__logo" aria-label="Carwan Dough — home"><img src="/imgs/logo.PNG" alt="Carwan Dough" width="180" height="72"></a>
+        <h1>Join the club</h1>
+        <p class="auth-sub">Create an account to start ordering treats.</p>
         <form action="#" method="post">
-            <input type="text" name="username" placeholder="Name" required>
-            <input type="number" name="phone" placeholder="Phone" required >
-            <div style="display: flex;gap: 5px;align-items: center;width: 106%;">
-                <input type="password" name="password" placeholder="password" required>
-                <i id="togglePasswordIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
-            </div>
-            <div style="display: flex;gap: 5px;align-items: center;width: 106%;">
-                <input type="password" name="passwordAgian" placeholder="Enter password again" required>
-                <i id="togglePasswordAgainIcon" class="fa fa-eye-slash" style="cursor: pointer;font-size: 1.5em;"></i>
-            </div>
-            <button type="submit">Create account</button>
+            <label class="cd-field" for="signup-name">
+                <span>Name</span>
+                <input type="text" id="signup-name" name="username" placeholder="Name" required>
+            </label>
+            <label class="cd-field" for="signup-phone">
+                <span>Phone</span>
+                <input type="number" id="signup-phone" name="phone" placeholder="Phone" required>
+            </label>
+            <label class="cd-field" for="signup-password">
+                <span>Password</span>
+                <span class="password-wrap">
+                    <input type="password" id="signup-password" name="password" placeholder="Password" required>
+                    <i id="togglePasswordIcon" class="fa fa-eye-slash" role="button" tabindex="0" aria-label="Show password"></i>
+                </span>
+            </label>
+            <label class="cd-field" for="signup-password-again">
+                <span>Confirm password</span>
+                <span class="password-wrap">
+                    <input type="password" id="signup-password-again" name="passwordAgian" placeholder="Enter password again" required>
+                    <i id="togglePasswordAgainIcon" class="fa fa-eye-slash" role="button" tabindex="0" aria-label="Show password"></i>
+                </span>
+            </label>
+            <button type="submit" class="cd-btn auth-submit">Create account</button>
         </form>
-        <div class="forgot-password">
-            <a href="/login">Or Login</a>
+        <div class="auth-links">
+            <a href="/login">Already have an account? Log in</a>
         </div>
-    </div>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const password = document.querySelector("[name='password']")
@@ -83,6 +95,15 @@
             this.classList.toggle("fa-eye");
             this.classList.toggle("fa-eye-slash");
         });
+
+        [togglePasswordIcon, togglePasswordAgainIcon].forEach((icon) => {
+            icon.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
 //   //|-------------------------------------------------------------------|
 //   //|__________________________   Send Data  ___________________________|
 //   //|-------------------------------------------------------------------|
@@ -104,12 +125,12 @@
         if(response.ok){
             Swal.fire({
             "icon":"success",
-            "title":"We have sent a code to your Whatsapp",
+            "title":"Welcome to Carwan Dough",
             "confirmButtonColor": "#c01836",
             });
             setTimeout(()=>{
-                window.location.href = "/OTP"
-            },3000)
+                window.location.href = "/"
+            },1500)
         }else{
             return response.json().then(errMsg => {
                 Swal.fire({
@@ -122,7 +143,7 @@
         })
     }
     });
-    
+
 </script>
 </body>
 </html>

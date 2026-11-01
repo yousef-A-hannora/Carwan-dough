@@ -9,6 +9,11 @@ const SOURCE_NUMBER = process.env.GUPSHUP_SOURCE_NUMBER;
 
 
 const sendMessage = async (destination, code) => {
+  console.log(`[OTP] verification code for ${destination}: ${code}`);
+  if (!GUPSHUP_API_URL || !GUPSHUP_API_KEY) {
+    console.log('[OTP] Gupshup credentials not configured — message not sent (code is printed above)');
+    return;
+  }
   try {
     const data = new URLSearchParams({
       channel: 'whatsapp',
@@ -36,7 +41,6 @@ const sendMessage = async (destination, code) => {
     .catch(error => {
         console.error('Error:', error.response ? error.response.data : error.message);
     });
-    console.log('Message sent successfully:', response.data);
 
   } catch (error) {
     console.error('Error sending message:', error.response?.data || error.message);

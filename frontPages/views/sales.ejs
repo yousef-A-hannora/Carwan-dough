@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--=== Coding by CodingLab | www.codinglabweb.com === -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,105 +7,122 @@
     <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
 
     <!----======== CSS ======== -->
-     <link rel="stylesheet" href="/css/style.css">
-     <link rel="stylesheet" href="/css/content.css">
+     <link rel="stylesheet" href="/css/admin.css">
 
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 
-    <title>Sales and copons</title> 
+    <title>Sales — Carwan Dough Admin</title>
 </head>
 <body>
 <%- include("Bases/adminBase") %>
 
             <div class="overview">
                 <div class="title">
-                    <i class="uil-file-contract-dollar"></i>
-                    <span class="text">Sales and copons</span>
+                    <i class="uil uil-pricetag-alt"></i>
+                    <div>
+                        <span class="text">Sales &amp; Coupons</span>
+                        <div class="page-sub">Create and manage product discounts</div>
+                    </div>
                 </div>
             </div>
             <main>
-<body>
-<!-- Modal -->
-<button class="button" id="openSalesModal">Create Sale</button>
 
-<div id="AddSaleModal" class="modal formInputs">
+                <div class="toolbar">
+                    <button class="btn btn-primary" id="openSalesModal"><i class="uil uil-percentage"></i>Create Sale</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <span class="card-title"><i class="uil uil-pricetag-alt"></i>Active Sales</span>
+                        <span class="badge badge-brand"><%= sales.length %> active</span>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="product-table data-table">
+                            <thead>
+                                <tr>
+                                    <th>Discount</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Sale Items</th>
+                                    <th class="col-actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(sales.length === 0){ %>
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="uil uil-pricetag-alt"></i>
+                                            No active sales right now.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                <% for(let sale of sales){ %>
+                                <tr>
+                                    <td><span class="badge badge-danger"><%= sale.salesPrecentage %>% OFF</span></td>
+                                    <td class="cell-muted"><%= String(sale.startDate).split(" ").slice(1,3) %></td>
+                                    <td class="cell-muted"><%= String(sale.endDate).split(" ").slice(1,3) %></td>
+                                    <td>
+                                        <ul class="items-list">
+                                            <% for(let item of sale.products){ %>
+                                                <li><%= item.name %></li>
+                                            <% } %>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <a href="#"><button class="remove-button" Sale-id="<%= sale.id %>">Remove</button></a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+
+<!-- Modal -->
+<div id="AddSaleModal" class="modal">
     <div class="modal-content">
         <span class="close-button" id="closeSalesModal">&times;</span>
-        <h2>Add Sale</h2>
+        <h2>Create Sale</h2>
         <form id="sales-form" >
 
             <div class="input-group">
-                <label for="sale-percentage">Sale Percentage (%):</label>
-                <input type="number" id="sale-percentage" name="salePercentage" required>
+                <label for="sale-percentage">Sale Percentage (%)</label>
+                <input type="number" id="sale-percentage" name="salePercentage" required min="1" max="100">
             </div>
 
             <div class="input-group">
-                <label for="start-date">Start Date:</label>
+                <label for="start-date">Start Date</label>
                 <input type="date" id="start-date" name="startDate" required>
             </div>
 
             <div class="input-group">
-                <label for="end-date">End Date:</label>
+                <label for="end-date">End Date</label>
                 <input type="date" id="end-date" name="endDate" required>
             </div>
-            <br>            
-            <br>            
-            <button type="button" id="select-all" style="border: none;background-color: var(--red);color: var(--white);padding: 10px;border-radius: 20px;">Select All</button>
-        <div style="height: 10em ;overflow: auto;display: flex;flex-direction: column;width: 100%;" id="product-list">
-            
-            <% for(let product of products){ %>
-                <div class="input-work-dayes">
-                    <label for="<%= product.name %>"><%= product.name %></label>
-                    <input type="checkbox" name="products" value="<%= product.id %>" id="<%= product.name %>">
+
+            <div class="input-group">
+                <label>Products on sale</label>
+                <button type="button" id="select-all" class="btn btn-sm btn-outline" style="justify-self:start">Select All</button>
+                <div class="check-list" id="product-list">
+                    <% for(let product of products){ %>
+                        <div class="input-work-dayes">
+                            <label for="<%= product.name %>"><%= product.name %></label>
+                            <input type="checkbox" name="products" value="<%= product.id %>" id="<%= product.name %>">
+                        </div>
+                    <% } %>
                 </div>
-            <% } %>
-        </div>
-        <br>
-        <button class="submit-button">Add Sale</button>
-    </form>
+            </div>
+            <button class="submit-button">Add Sale</button>
+        </form>
     </div>
 </div>
 
-
-
-<!-- Active Sales Table -->
-<h1 class="category-name">Active Sales</h1>
-<table class="product-table">
-    <thead>
-        <tr>
-            <th>Sale percentage</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Sale Items</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% for(let sale of sales){ %>
-        <tr>
-            <td style="width: 0px;"><%= sale.salesPrecentage %>%</td>
-            <td><%= String(sale.startDate).split(" ").slice(1,3) %></td>
-            <td><%= String(sale.endDate).split(" ").slice(1,3) %></td>
-            <td>
-                <ul>
-                    <% for(let item of sale.products){ %>
-                        <li><%= item.name %></li>
-                    <% } %>
-                </ul>
-            </td>
-            <td style="width: 5vh;">
-                <a href="#"><button class="remove-button" Sale-id="<%= sale.id %>" id="removeProd">Remove</button></a>
-            </td>
-        </tr>
-    <% } %>
-    </tbody>
-</table>
-
-            </main>
 <%- include("Bases/adminBaseCloser") %>
-
-</body>
 
 <script>
     // Ensure the modals are hidden initially
@@ -195,4 +211,5 @@ if (event.target == document.getElementById("AddSaleModal")) {
         }
     })
 </script>
+</body>
 </html>

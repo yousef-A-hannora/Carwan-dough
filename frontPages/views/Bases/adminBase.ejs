@@ -1,53 +1,64 @@
-<nav>
-    <div class="logo-name">
+<nav class="sidebar">
+    <div class="sidebar-head">
         <div class="logo-image">
-            <img src="/imgs/mini-logo.png" alt="">
+            <img src="/imgs/mini-logo.png" alt="Carwan Dough logo">
         </div>
-        <span class="logo_name">Carawan dough</span>
+        <span class="logo_name">Carwan Dough<small>Admin Panel</small></span>
     </div>
 
-    <div class="menu-items">
-        <ul class="nav-links">
-            <li><a href="/orders">
-                <i class="uil uil-comments"></i>
-                <span class="link-name">Orders</span>
-            </a></li>
-            <li><a href="/content">
-                <i class="uil uil-files-landscapes"></i>
-                <span class="link-name">Content</span>
-            </a></li>
-            <li><a href="/analytics">
-                <i class="uil uil-chart"></i>
-                <span class="link-name">Statistics</span>
-            </a></li>
-            <li><a href="/sales">
-                <i class="uil-file-contract-dollar"></i>
-                <span class="link-name">Sales</span>
-            </a></li>
-        </ul>
+    <div class="sidebar-body">
+        <div>
+            <div class="nav-group-label">Menu</div>
+            <ul class="nav-links">
+                <li><a href="/orders" data-nav="/orders">
+                    <i class="uil uil-clipboard-notes"></i>
+                    <span class="link-name">Orders</span>
+                </a></li>
+                <li><a href="/order-history" data-nav="/order-history">
+                    <i class="uil uil-history"></i>
+                    <span class="link-name">Order History</span>
+                </a></li>
+                <li><a href="/content" data-nav="/content">
+                    <i class="uil uil-files-landscapes"></i>
+                    <span class="link-name">Content</span>
+                </a></li>
+                <li><a href="/analytics" data-nav="/analytics">
+                    <i class="uil uil-chart"></i>
+                    <span class="link-name">Statistics</span>
+                </a></li>
+                <li><a href="/sales" data-nav="/sales">
+                    <i class="uil uil-pricetag-alt"></i>
+                    <span class="link-name">Sales</span>
+                </a></li>
+            </ul>
+        </div>
+
         <ul class="logout-mode">
+            <li>
+                <div class="mode-row mode-toggle" role="button" tabindex="0" aria-label="Toggle dark mode">
+                    <i class="uil uil-moon"></i>
+                    <span class="link-name">Dark Mode</span>
+                    <span class="switch"></span>
+                </div>
+            </li>
             <li><a href="/api/auth/logout">
                 <i class="uil uil-signout"></i>
                 <span class="link-name">Logout</span>
             </a></li>
-
-            <li class="mode">
-                <a href="#">
-                    <i class="uil uil-moon"></i>
-                <span class="link-name">Dark Mode</span>
-            </a>
-
-            <div class="mode-toggle">
-              <span class="switch"></span>
-            </div>
-        </li>
         </ul>
     </div>
 </nav>
+<div class="sidebar-scrim" id="sidebarScrim"></div>
 
 <section class="dashboard">
     <div class="top">
-        <i class="uil uil-bars sidebar-toggle"></i>
+        <i class="uil uil-bars sidebar-toggle" role="button" tabindex="0" aria-label="Toggle sidebar"></i>
+        <div class="top-spacer"></div>
+        <a href="/" class="store-link"><i class="uil uil-store"></i><span>View Store</span></a>
+        <div class="admin-chip">
+            <span class="avatar">A</span>
+            <span class="admin-name">Admin</span>
+        </div>
     </div>
 
     <div class="dash-content">

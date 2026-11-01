@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="shortcut icon" href="imgs/mini-logo.png" type="image/x-icon">
-
-    <title>OTP</title>
+    <%- include("Bases/CustomerHead", {title: "Verify"}) %>
+    <link rel="stylesheet" href="/css/shop-auth.css">
 </head>
-<body>
-    <div class="logo-container">
-        <a href="/home"><img src="imgs/logo.PNG" class="logo"></a>
-    </div>
-    <div class="login-container">
-        <h2>User verify</h2>
+<body class="auth-body">
+    <span class="cd-sprinkle cd-sprinkle--a" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--b" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--c" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--d" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--e" aria-hidden="true"></span>
+    <span class="cd-sprinkle cd-sprinkle--f" aria-hidden="true"></span>
+
+    <main class="auth-card cd-card">
+        <a href="/home" class="auth-card__logo" aria-label="Carwan Dough — home"><img src="/imgs/logo.PNG" alt="Carwan Dough" width="180" height="72"></a>
+        <h1>Check your WhatsApp</h1>
+        <p class="auth-sub">We sent you a code — enter it below to verify your account.</p>
         <form action="/login" method="post">
-            <input type="number" placeholder="code" name="OTP" required>
-            <button type="submit">verify</button>
+            <label class="cd-field" for="otp-code">
+                <span>Verification code</span>
+                <input type="number" id="otp-code" placeholder="Code" name="OTP" required>
+            </label>
+            <button type="submit" class="cd-btn auth-submit">Verify</button>
         </form>
-    </div>
+    </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

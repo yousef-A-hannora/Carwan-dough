@@ -177,7 +177,7 @@ export async function getOrderHistory() {
             },
             orderItems:{
                 include:{
-                    product:true
+                    product:{include:{category:true}}
                 }
             },
             orderPhones:true

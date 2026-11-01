@@ -1,155 +1,28 @@
-<style>
-        .product-title{
-            text-align: left;
-            font-size: 3vw;
-        }
-
-        .sharebox-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 70%;
-            margin: auto;
-        }
-        .donut-item {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-        }
-        input {
-            width: 60px;
-            text-align: center;
-            font-size: 2em;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .submit-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            font-size: 1.2em;
-            color: white;
-            background-color: var(--red);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        #counterWithBtns {
-            width: 20%;
-            display: flex;
-            align-items: center;
-            gap: 10%;
-            justify-content: center;
-        }
-        .quantity-buttons {
-            color: var(--dark-red);
-            background-color: var(--white);
-            border: 2px var(--dark-red) solid;
-            width: 30px;
-            height: 30px;
-            font-size: 1em;
-            font-weight: bold;
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-            transform: scale(1.6);
-        }
-
-        .disabled-quantity-buttons {
-            color:#ccc;
-        }
-        #note{
-        font-size: 1.5vw;
-        margin: 10px;
-        }
-    @media(max-width:700px){
-        .product-title{
-            text-align: left;
-            font-size: 7vw;
-        }
-        .sharebox-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin: auto;
-        }
-        .donut-item {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        input {
-            width: 30%;
-            font-size: 7vw;
-            border-radius: 15px;
-        }
-
-        #counterWithBtns {
-            width: 40%;
-        }
-        .quantity-buttons {
-            color: var(--dark-red);
-            background-color: var(--white);
-            border: 2px var(--dark-red) solid;
-            width: 30px;
-            height: 30px;
-            font-size: 1em;
-            font-weight: bold;
-            background-color: #f5f5f5;
-            border: 1px solid #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-            transform: scale(1.4);
-        }
-        #note{
-        font-size: 3.5vw;
-        }
-    }
-
-</style>
-
 <div class="info-container">
+    <a href="/CategoryProducts/<%= product.categoryId %>" class="cd-chip"><i class="fa-solid fa-tag" aria-hidden="true"></i><%= product.category.name %></a>
+    <h1 class="product-title"><%= product.name %></h1>
     <p class="description"><%= product.description %></p>
-    <div class="price">Price: <span id="product-price"><%= product.price %> egp</span></div>
-    <p id="note" ></p>
+    <div class="price-block">
+        <span class="price-block__label">Price</span>
+        <span class="price-block__current"><span id="product-price"><%= product.price %> EGP</span></span>
+    </div>
+    <p id="note"></p>
 
     <form action="" method="post" class="sharebox-form">
         <% for(let product of CWP.products){ %>
 
-        <!-- Example Donut 1 -->
         <div class="donut-item">
-            <span class="product-title" style="color: var(--red);"><%= product.name %></span>
+            <span class="product-title"><%= product.name %></span>
             <div id="counterWithBtns">
-                <button type="button" class="quantity-buttons" id="minusBtn" productId="<%= product.id %>">-</button>
-                <input type="number" name="<%= product.name %>" id="quantity-<%= product.id %>" value="0" min="0">
-                <button type="button" class="quantity-buttons" id="plusBtn" productId="<%= product.id %>">+</button>
+                <button type="button" class="quantity-buttons" id="minusBtn" productId="<%= product.id %>" aria-label="Remove one <%= product.name %>">−</button>
+                <input type="number" name="<%= product.name %>" id="quantity-<%= product.id %>" value="0" min="0" aria-label="<%= product.name %> quantity">
+                <button type="button" class="quantity-buttons" id="plusBtn" productId="<%= product.id %>" aria-label="Add one <%= product.name %>">+</button>
             </div>
         </div>
         <% } %>
 
         <!-- Submit Button -->
-        <button type="submit" class="submit-button">Order Now</button>
+        <button type="submit" class="submit-button"><i class="fa-solid fa-box-open" aria-hidden="true"></i>&nbsp;Order Now</button>
     </form>
 </div>
 
@@ -249,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "confirmButtonColor": "#c01836",
                 });
                 setTimeout(()=>{
-                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";                   
+                    window.location.href = "/CategoryProducts/<%= product.categoryId %>";
                 },1000)
             } else {
                 note.textContent = "Failed to submit your order. Please try again.";

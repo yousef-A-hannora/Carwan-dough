@@ -1,0 +1,147 @@
+/* Carwan Dough — cart / checkout page */
+
+.cart-page { padding-bottom: var(--cd-s16); }
+
+.cart-page__title {
+    font-family: var(--cd-font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--cd-red);
+    margin: 0 0 var(--cd-s6);
+}
+
+.cart-layout {
+    display: grid;
+    gap: var(--cd-s6);
+}
+@media (min-width: 1024px) {
+    .cart-layout { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: start; }
+}
+
+/* ---------- items ---------- */
+.cart-items { display: grid; gap: var(--cd-s3); }
+.cart-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--cd-s2) var(--cd-s4);
+    align-items: center;
+    padding: var(--cd-s4);
+}
+.cart-item__name {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--cd-ink);
+    margin: 0;
+}
+.cart-item__meta {
+    color: var(--cd-ink-muted);
+    font-size: .9rem;
+    margin: 0;
+}
+.cart-item__line {
+    font-family: var(--cd-font-head);
+    font-weight: 700;
+    color: var(--cd-red);
+    text-align: right;
+}
+.cart-item .delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cd-s1);
+    min-height: 36px;
+    padding: var(--cd-s1) var(--cd-s3);
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-pill);
+    background: #fff;
+    color: var(--cd-red);
+    font-family: var(--cd-font-head);
+    font-weight: 600;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: background-color .15s ease-out, color .15s ease-out, border-color .15s ease-out;
+}
+.cart-item .delete i { pointer-events: none; }
+.cart-item .delete:hover { background: var(--cd-red); border-color: var(--cd-red); color: #fff; }
+
+/* ---------- checkout card ---------- */
+.checkout-card {
+    padding: var(--cd-s6);
+}
+@media (min-width: 1024px) {
+    .checkout-card { position: sticky; top: 92px; }
+}
+.checkout-card h2 {
+    font-family: var(--cd-font-head);
+    font-size: 1.4rem;
+    margin-bottom: var(--cd-s4);
+}
+.checkout-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: var(--cd-s4);
+    margin-bottom: var(--cd-s6);
+    border-radius: var(--cd-r-sm);
+    background: var(--cd-red-50);
+    font-family: var(--cd-font-head);
+    font-weight: 600;
+    color: var(--cd-ink);
+}
+.checkout-total #total-price {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--cd-red);
+}
+
+/* phone rows injected by JS */
+#phone-container .cd-phone-row {
+    display: flex;
+    align-items: end;
+    gap: var(--cd-s2);
+    margin-bottom: var(--cd-s3);
+}
+#phone-container .cd-phone-row .cd-field { flex: 1; margin-bottom: 0; }
+.remove-phone-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--cd-s1) var(--cd-s3);
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-pill);
+    background: #fff;
+    color: var(--cd-red);
+    font-family: var(--cd-font-head);
+    font-weight: 600;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: background-color .15s ease-out, color .15s ease-out;
+}
+.remove-phone-btn:hover { background: var(--cd-red); color: #fff; border-color: var(--cd-red); }
+
+/* payment radio cards */
+.pay-methods { display: grid; gap: var(--cd-s2); margin-bottom: var(--cd-s6); }
+.pay-card {
+    display: flex;
+    align-items: center;
+    gap: var(--cd-s3);
+    padding: var(--cd-s3) var(--cd-s4);
+    border: 2px solid var(--cd-border);
+    border-radius: var(--cd-r-sm);
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s ease-out, background-color .15s ease-out;
+}
+.pay-card:hover { border-color: var(--cd-pink); }
+.pay-card input { accent-color: var(--cd-red); width: 18px; height: 18px; }
+.pay-card:has(input:checked) {
+    border-color: var(--cd-red);
+    background: var(--cd-red-50);
+}
+.pay-card__label { font-family: var(--cd-font-head); font-weight: 600; color: var(--cd-ink); }
+.pay-card__hint { display: block; font-size: .8rem; color: var(--cd-ink-muted); font-family: var(--cd-font-body); font-weight: 400; }
+
+#placeorder-btn { width: 100%; min-height: 52px; font-size: 1.1rem; }
